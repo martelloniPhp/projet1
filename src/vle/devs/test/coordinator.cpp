@@ -31,6 +31,7 @@
 #include <stdexcept>
 #include <vle/devs/Coordinator.hpp>
 #include <vle/devs/Dynamics.hpp>
+#include <vle/devs/DynamicsComp.hpp>
 #include <vle/devs/Executive.hpp>
 #include <vle/devs/RootCoordinator.hpp>
 #include <vle/oov/Plugin.hpp>

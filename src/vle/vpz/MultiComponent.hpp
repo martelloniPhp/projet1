@@ -146,7 +146,7 @@ namespace vle { namespace vpz {
          */
       /*  inline void setDynamics(const std::string& str)
         { m_dynamics = str; }
-
+*/
         /**
          * @brief Assign an observable.
          * @param str The observable.

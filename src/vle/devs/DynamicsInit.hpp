@@ -39,6 +39,13 @@ struct DynamicsInit
     PackageId               packageid;
 };
 
+struct DynamicsCompInit
+{
+    utils::ContextPtr       context;
+    const vpz::MultiComponent& model;
+    PackageId               packageid;
+};
+
 struct ExecutiveInit
 {
     Coordinator&            coordinator;

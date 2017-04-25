@@ -38,92 +38,155 @@
 
 namespace vle { namespace devs {
 
-DynamicsComp::DynamicsComp(const DynamicsInit& init,
+DynamicsComp::DynamicsComp(const DynamicsCompInit& init,
                    const InitEventList& /* events */)
-    : Dynamics(init)
+    : m_context(init.context)
+    , m_model(init.model)
+    , m_packageid(init.packageid)
 {
 }
 
-DynamicsComp::DynamicsComp(const DynamicsInit& init,
-                   const InitEventList& /* events */)
-    : Dynamics(init)
+DynamicsComp::DynamicsComp(const DynamicsCompInit& init,
+                   const InitEventList& events, std::string name)
+    : m_context(init.context)
+    , m_model(init.model)
+    , m_packageid(init.packageid)
+    ,m_Name(name)
 {
+	
 }
 
-
-Time DynamicsComp::init(Time /* time */ )
+std::string DynamicsComp::getPackageDir() const
 {
-    setLastTime(Time(0));
-    m_neighbourModified = false;
-    return devs::infinity;
-}
-
-void DynamicsComp::output(Time /* time */, ExternalEventList& output) const
-{
-    if (m_modified) {
-        output.emplace_back("out");
-        value::Map& attr = output.back().addMap();
-
-        map <string ,
-             pair< std::unique_ptr<value::Value>,bool > >::const_iterator it =
-            m_state.begin();
-
-        while (it != m_state.end()) {
-            if (it->second.second)
-                attr.add(it->first,it->second.first->clone());
-            ++it;
-        }
-    }
-}
-
-/*Time DynamicsComp::timeAdvance() const
-{
-    return m_sigma;
-}*/
-
-void DynamicsComp::internalTransition(vle::devs::Time /* time */)
-{
-    if (m_modified)
-        m_modified = false;
-}
-
-void DynamicsComp::externalTransition(const ExternalEventList& event,
-                                  Time time)
-{
-    ExternalEventList::const_iterator it = event.begin();
-
-    while (it != event.end()) {
-        string v_portName = it->getPortName();
-
-        if (existNeighbourState(v_portName)) {
-            map <string, std::unique_ptr<value::Value> >::const_iterator it2 =
-                m_neighbourState[v_portName].begin();
-
-            while (it2 != m_neighbourState[v_portName].end()) {
-                string v_name = it2->first;
-                const value::Value& v_value =
-                        *it->attributes()->toMap().get(v_name);
-                setNeighbourState(v_portName,v_name,v_value);
-                ++it2;
-            }
-            m_neighbourModified = true;
-            updateSigma(time);
-        }
-        else // c'est une perturbation
-            processPerturbation(*it);
-        ++it;
-    }
-}
-
-std::unique_ptr<vle::value::Value> CellDevs::observation(
-        const ObservationEvent& event) const
-{
-    if (existState(event.getPortName())) {
-        return getState(event.getPortName()).clone();
+    vle::utils::Package pkg(m_context, *m_packageid);
+    if (pkg.existsBinary()) {
+        return pkg.getDir(vle::utils::PKG_BINARY);
     } else {
-        return 0;
+        throw vle::utils::FileError(
+            (fmt(_("Package '%1%' is not " "installed")) % *m_packageid).str());
     }
 }
 
-}} // namespace vle extension 
+std::string DynamicsComp::getPackageSimulatorDir() const
+{
+    vle::utils::Package pkg(m_context, *m_packageid);
+    if (pkg.existsBinary()) {
+        return pkg.getPluginSimulatorDir(vle::utils::PKG_BINARY);
+    } else {
+        throw vle::utils::FileError(
+            (fmt(_("Package '%1%' is not " "installed")) % *m_packageid).str());
+    }
+}
+
+std::string DynamicsComp::getPackageSrcDir() const
+{
+    vle::utils::Package pkg(m_context, *m_packageid);
+    if (pkg.existsBinary()) {
+        return pkg.getSrcDir(vle::utils::PKG_BINARY);
+    } else {
+        throw vle::utils::FileError(
+            (fmt(_("Package '%1%' is not installed")) % *m_packageid).str());
+    }
+}
+
+std::string DynamicsComp::getPackageDataDir() const
+{
+    vle::utils::Package pkg(m_context, *m_packageid);
+    if (pkg.existsBinary()) {
+        return pkg.getDataDir(vle::utils::PKG_BINARY);
+    } else {
+        throw vle::utils::FileError(
+            (fmt(_("Package '%1%' is not installed")) % *m_packageid).str());
+    }
+}
+
+std::string DynamicsComp::getPackageDocDir() const
+{
+    vle::utils::Package pkg(m_context, *m_packageid);
+    if (pkg.existsBinary()) {
+        return pkg.getDocDir(vle::utils::PKG_BINARY);
+    } else {
+        throw vle::utils::FileError(
+            (fmt(_("Package '%1%' is not installed")) % *m_packageid).str());
+    }
+}
+
+std::string DynamicsComp::getPackageExpDir() const
+{
+    vle::utils::Package pkg(m_context, *m_packageid);
+    if (pkg.existsBinary()) {
+        return pkg.getExpDir(vle::utils::PKG_BINARY);
+    } else {
+        throw vle::utils::FileError(
+            (fmt(_("Package '%1%' is not " "installed")) % *m_packageid).str());
+    }
+}
+
+std::string DynamicsComp::getPackageFile(const std::string& name) const
+{
+    vle::utils::Package pkg(m_context, *m_packageid);
+    if (pkg.existsBinary()) {
+        return pkg.getFile(name, vle::utils::PKG_BINARY);
+    } else {
+        throw vle::utils::FileError(
+            (fmt(_("Package '%1%' is not installed")) % *m_packageid).str());
+    }
+}
+
+std::string DynamicsComp::getPackageLibFile(const std::string& name) const
+{
+    vle::utils::Package pkg(m_context, *m_packageid);
+    if (pkg.existsBinary()) {
+        return pkg.getLibFile(name, vle::utils::PKG_BINARY);
+    } else {
+        throw vle::utils::FileError(
+            (fmt(_("Package '%1%' is not installed")) % *m_packageid).str());
+    }
+}
+
+std::string DynamicsComp::getPackageSrcFile(const std::string& name) const
+{
+    vle::utils::Package pkg(m_context, *m_packageid);
+    if (pkg.existsBinary()) {
+        return pkg.getSrcFile(name, vle::utils::PKG_BINARY);
+    } else {
+        throw vle::utils::FileError(
+            (fmt(_("Package '%1%' is not installed")) % *m_packageid).str());
+    }
+}
+
+std::string DynamicsComp::getPackageDataFile(const std::string& name) const
+{
+    vle::utils::Package pkg(m_context, *m_packageid);
+    if (pkg.existsBinary()) {
+        return pkg.getDataFile(name, vle::utils::PKG_BINARY);
+    } else {
+        throw vle::utils::FileError(
+            (fmt(_("Package '%1%' is not installed")) % *m_packageid).str());
+    }
+}
+
+std::string DynamicsComp::getPackageDocFile(const std::string& name) const
+{
+    vle::utils::Package pkg(m_context, *m_packageid);
+    if (pkg.existsBinary()) {
+        return pkg.getDocFile(name, vle::utils::PKG_BINARY);
+    } else {
+        throw vle::utils::FileError(
+            (fmt(_("Package '%1%' is not installed")) % *m_packageid).str());
+    }
+}
+
+std::string DynamicsComp::getPackageExpFile(const std::string& name) const
+{
+    vle::utils::Package pkg(m_context, *m_packageid);
+    if (pkg.existsBinary()) {
+        return pkg.getExpFile(name, vle::utils::PKG_BINARY);
+    } else {
+        throw vle::utils::FileError(
+            (fmt(_("Package '%1%' is not installed")) % *m_packageid).str());
+    }
+}
+
+}}// namespace vle extension 
 

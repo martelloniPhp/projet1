@@ -35,6 +35,7 @@ namespace devs {
 
 void Scheduler::init(Time time)
 {
+	 
     m_current_time = time;
 
     m_current_bag.dynamics.clear();
@@ -53,11 +54,16 @@ void Scheduler::init(Time time)
         // std::vector to starts directly without merge vectors with
         // unordered_set.
         //
+      
 
-        if (sim->dynamics()->isExecutive())
-            m_current_bag.executives.emplace_back(sim);
-        else
+        if ((sim->isAtomic()) && (sim->dynamics()->isExecutive()))
+           {
+			    m_current_bag.executives.emplace_back(sim);
+			}
+        else{
+			
             m_current_bag.dynamics.emplace_back(sim);
+		}
 
         m_current_bag.unique_simulators.emplace(sim);
 
@@ -65,6 +71,7 @@ void Scheduler::init(Time time)
         sim->resetHandle();
         m_scheduler.pop();
     }
+   
 }
 
 void Scheduler::addInternal(Simulator *simulator, Time time)
@@ -145,17 +152,18 @@ void Scheduler::delSimulator(Simulator *simulator)
 
 void Scheduler::makeNextBag()
 {
+	
     m_current_time = getNextTime();
-
+    
     m_current_bag.dynamics.clear();
     m_current_bag.executives.clear();
     m_current_bag.unique_simulators.clear();
-
+ 
     while (not m_scheduler.empty() and
            m_scheduler.top().m_time == m_current_time) {
 
         Simulator *sim = m_scheduler.top().m_simulator;
-
+ 
         //
         // Add the simulator pointer into the unordered_set and into the
         // vector. In std::unordered_set to be sure that only one pointer is
@@ -164,7 +172,7 @@ void Scheduler::makeNextBag()
         // unordered_set.
         //
 
-        if (sim->dynamics()->isExecutive())
+        if ((sim->isAtomic()) && (sim->dynamics()->isExecutive()))
             m_current_bag.executives.emplace_back(sim);
         else
             m_current_bag.dynamics.emplace_back(sim);
@@ -174,6 +182,7 @@ void Scheduler::makeNextBag()
         sim->setInternalEvent();
         sim->resetHandle();
         m_scheduler.pop();
+        
     }
 }
 }

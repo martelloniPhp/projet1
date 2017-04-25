@@ -29,6 +29,7 @@
 #include <functional>
 #include <vle/devs/Coordinator.hpp>
 #include <vle/devs/Dynamics.hpp>
+#include <vle/devs/DynamicsComp.hpp>
 #include <vle/devs/ExternalEvent.hpp>
 #include <vle/devs/ExternalEventList.hpp>
 #include <vle/devs/InternalEvent.hpp>
@@ -86,17 +87,21 @@ Coordinator::Coordinator(utils::ContextPtr context,
 
 void Coordinator::init(const vpz::Model &mdls, Time current, Time duration)
 {
+	
     m_currentTime = current;
     m_durationTime = duration;
     buildViews();
+     
     addModels(mdls);
     m_isStarted = true;
-
+    std::cout << "coordinator init 1" << std::endl;
     m_eventTable.init(current);
+    std::cout << "coordinator init 2" << std::endl;
 }
 
 void Coordinator::run()
 {
+	std::cout << "run" << std::endl;
     Bag &bag = m_eventTable.getCurrentBag();
     if (not bag.dynamics.empty() or not bag.executives.empty())
         m_currentTime = m_eventTable.getCurrentTime();
@@ -112,6 +117,7 @@ void Coordinator::run()
 
     const std::size_t nb_dynamics = bag.dynamics.size();
     const std::size_t nb_executive = bag.executives.size();
+    std::cout << "run: nb_dynamics = "<< nb_dynamics << std::endl;
 
     if (nb_dynamics > 0) {
         for (std::size_t i = 0; i != nb_dynamics; ++i)
@@ -149,6 +155,7 @@ void Coordinator::run()
         m_simulators_thread_pool.for_each(bag.dynamics, m_currentTime);
     }
     else {
+		
         for (auto &elem : bag.dynamics) {
             if (elem->haveInternalEvent()) {
                 if (not elem->haveExternalEvents())
@@ -190,6 +197,7 @@ void Coordinator::run()
     // Finally, we go through simulators and executive to get all observation
     // and dispatch to output plug-in.
     //
+    
     for (auto &elem : bag.dynamics) {
         auto &observations = elem->getObservations();
         for (auto &obs : observations)
@@ -216,6 +224,7 @@ void Coordinator::run()
     // Process observation event if the next bag is scheduled for a different
     // date than \e m_currentTime.
     //
+   
     auto next = m_eventTable.getNextTime();
     if (next > m_currentTime) {
 
@@ -259,7 +268,9 @@ void Coordinator::run()
         dynamic_deletion();
 
     m_eventTable.makeNextBag();
+      
     m_currentTime = m_eventTable.getCurrentTime();
+    
 }
 
 void Coordinator::createModel(vpz::AtomicModel *model,
@@ -550,8 +561,18 @@ void Coordinator::processInit(Simulator *simulator)
 
     if (not isInfinity(tn)) {
         m_eventTable.addInternal(simulator, tn);
+        std::cout << "_eventTable.addInternal("<< simulator->getName() << ", " << tn <<")" << std::endl;
     }
-    std::cout << "process init" << std::endl;
+    
+    Bag &bag = m_eventTable.getCurrentBag();
+    std::cout << "process init avec: " << m_simulators.size() << " simulaturs" <<std::endl;
+    
+    for (auto &sim : m_simulators)
+    {
+		std::cout << "- "<< sim->getName() << std::endl;
+	}
+	
+	
 }
 
 std::unique_ptr<value::Map> Coordinator::finish()

@@ -34,6 +34,7 @@
 #include <stdexcept>
 #include <vle/devs/Coordinator.hpp>
 #include <vle/devs/Dynamics.hpp>
+#include <vle/devs/DynamicsComp.hpp>
 #include <vle/devs/DynamicsDbg.hpp>
 #include <vle/devs/Executive.hpp>
 #include <vle/devs/RootCoordinator.hpp>
@@ -60,6 +61,16 @@ using namespace vle;
         return new model_(init, events);                                      \
     }                                                                         \
     }
+    
+#define DECLARE_DYNAMICSCOMP_SYMBOL(symbol_, model_)                              \
+    extern "C" {                                                              \
+    VLE_MODULE vle::devs::DynamicsComp *                                          \
+    symbol_(const vle::devs::DynamicsCompInit &init,                              \
+            const vle::devs::InitEventList &events)                           \
+    {                                                                         \
+        return new model_(init, events);                                      \
+    }                                                                         \
+    }    
 
 #define DECLARE_EXECUTIVE_SYMBOL(symbol_, model_)                             \
     extern "C" {                                                              \

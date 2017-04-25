@@ -108,19 +108,20 @@ void SimulatorMulti::addTargetPort(const std::string &port)
 
 void SimulatorMulti::addDynamics(std::unique_ptr<Dynamics> dynamics)
 {
+   throw utils::InternalError(_("Simulator Multi wrong model"));
    //auto *dyn =  dynamic_cast<std::unique_ptr<DynamicsComp>>(std::move(dynamics));  
    //std::unique_ptr<DynamicsComp>  dyn = dynamics;
     //m_dynamics->push_back(std::move(dynamics));
 }
 void SimulatorMulti::addDynamics(std::unique_ptr<DynamicsComp> dynamics)
 {
-
-    m_dynamics->push_back(std::move(dynamics));
-    std::cout << "add dynamics one " << dynamics->getName() << std::endl;
+    
+    std::cout << "add dynamics Comp " << dynamics->getName() <<" au model: " << dynamics->getModelName() << std::endl;
+    m_dynamics.push_back(std::move(dynamics));
 }
 void SimulatorMulti::addDynamics(std::vector<std::unique_ptr<DynamicsComp>> *dynamics)
 {
-    m_dynamics = dynamics;
+    //m_dynamics = dynamics;
 }
 
 const std::string &SimulatorMulti::getName() const
@@ -139,10 +140,11 @@ void SimulatorMulti::finish()
 void SimulatorMulti::output(Time time)
 {
     assert(m_result.empty());
-
+//std::cout  << " output" << std::endl;
     //m_dynamics->output(time, m_result);
-     for (auto &dyn : *m_dynamics)
+     for (auto &dyn : m_dynamics)
     {
+		std::cout << dyn->getName() << " output" << std::endl;
 		if(dyn->getTn() == time){
 		dyn->output(time, m_result);
 	}
@@ -152,9 +154,9 @@ void SimulatorMulti::output(Time time)
 
 Time SimulatorMulti::timeAdvance()
 {
-    Time tn ;//= m_dynamics->timeAdvance();
+    Time tn = infinity;//= m_dynamics->timeAdvance();
     Time temp;
-	for (auto &dyn : *m_dynamics)
+	for (auto &dyn : m_dynamics)
     {
       temp = dyn->timeAdvance();
       //m_eventTable.init(temp);
@@ -168,19 +170,24 @@ Time SimulatorMulti::timeAdvance()
         throw utils::ModellingError(
             (fmt(_("Negative time advance in '%1%' (%2%)")) % getName() % tn)
                 .str());
-
+tn =1;
+std::cout  << " time advence " << tn << std::endl;
     return tn;
+    
 }
 
 Time SimulatorMulti::init(Time time)
 {
-	Time tn;
-	Time temp;
-    for (auto &dyn : *m_dynamics)
+    Time tn = infinity;//= m_dynamics.front()->init(time);
+    Time temp;
+    
+    for (auto &dyn : m_dynamics)
     {
       temp = dyn->init(time);
+      std::cout  << " retour dyn init " << dyn->init(time) << std::endl;
       //m_eventTable.init(temp);
-      if(!(temp>tn))
+      std::cout  << " temp:" << temp << " tn " << tn << " comparaison: " << (temp < tn) << std::endl;
+      if(temp < tn)
       {
 		  tn = temp;
 	  }
@@ -192,10 +199,9 @@ Time SimulatorMulti::init(Time time)
                 .str());
 
     m_tn = tn + time;
-    
-    std::cout << "simulator multi multicomposant"<< std::endl;
-    
-    return m_tn;
+    std::cout  << " time init " << m_tn << std::endl;
+   // return m_tn;
+    return 0;
 }
 
 Time SimulatorMulti::confluentTransitions(Time time)
@@ -204,7 +210,7 @@ Time SimulatorMulti::confluentTransitions(Time time)
     assert(m_have_internal == true and "Simulator d-conf error");
    // m_dynamics->confluentTransitions(time, m_external_events);
     Time temp;
-for (auto &dyn : *m_dynamics)
+for (auto &dyn : m_dynamics)
     {
 		if(dyn->getTn() == time)
 		{
@@ -225,30 +231,23 @@ for (auto &dyn : *m_dynamics)
     m_external_events.clear();
     m_have_internal = false;
 
-    m_tn = timeAdvance() + time;
+   m_tn = timeAdvance() + time;
     return m_tn;
 }
 
 Time SimulatorMulti::internalTransition(Time time)
 {
     assert(m_have_internal == true and "Simulator d-int error");
-   // m_dynamics->internalTransition(time);
-   Time temp;
-	  for (auto &dyn : *m_dynamics)
+    std::cout  << " delta int 1" <<  std::endl;
+    for (auto &dyn : m_dynamics)
     {
-		if(dyn->getTn() == time){
-		dyn->internalTransition(time);		
-		dyn->setTn(dyn->timeAdvance()+time);
-		if(temp>dyn->timeAdvance())
-		{
-			temp=dyn->timeAdvance();
-		}
+    dyn->internalTransition(time);
 	}
-		
-	}
+	std::cout  << " delta int 2" <<  std::endl;
     m_have_internal = false;
 
-    m_tn = temp + time;
+    m_tn = timeAdvance() + time;
+    std::cout  << " delta int 3" <<  std::endl;
     return m_tn;
 }
 
@@ -257,7 +256,7 @@ Time SimulatorMulti::externalTransition(Time time)
     assert(not m_external_events.empty() and "Simulator d-ext error");
      Time temp;
     //m_dynamics->externalTransition(m_external_events, time);
-for (auto &dyn : *m_dynamics)
+for (auto &dyn : m_dynamics)
     {
 		
 		dyn->externalTransition(m_external_events, time);

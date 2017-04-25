@@ -196,7 +196,7 @@ void SaxStackVpz::pushModel(const xmlChar **att)
     }
 
      if (xmlStrcmp(type, (const xmlChar *)"atomic") == 0) {
-		 std::cout <<"atomic parsé"<< std::endl;
+		// std::cout <<"atomic parsé"<< std::endl;
         try {
             auto ptr = new vpz::AtomicModel(
                 (const char *)name,
@@ -209,7 +209,7 @@ void SaxStackVpz::pushModel(const xmlChar **att)
                 ptr->setDebug();
 
             gmdl = ptr;
-            std::cout <<"atomic parent: "<< ptr->getParentName() <<std::endl;
+           // std::cout <<"atomic parent: "<< ptr->getParentName() <<std::endl;
         }
         catch (const utils::DevsGraphError &e) {
             throw utils::SaxParserError(
@@ -219,7 +219,7 @@ void SaxStackVpz::pushModel(const xmlChar **att)
         }
     }
     else if (xmlStrcmp(type, (const xmlChar *)"multi") == 0) {
-		 std::cout <<"multi parsé"<< std::endl;
+		// std::cout <<"multi parsé"<< std::endl;
         try {
             auto ptr = new vpz::MultiComponent(
                 (const char *)name,
@@ -243,7 +243,7 @@ void SaxStackVpz::pushModel(const xmlChar **att)
         }
     }
      else if (xmlStrcmp(type, (const xmlChar *)"component") == 0) {
-		 std::cout <<"component parsé,"<< std::endl;
+		// std::cout <<"component parsé,"<< std::endl;
         try {
             auto ptr = new vpz::Component(
                 (const char *)name,
@@ -257,7 +257,7 @@ void SaxStackVpz::pushModel(const xmlChar **att)
                 ptr->setDebug();
 
             gmdl = ptr;
-            std::cout <<"container: "<< ptr->getContainerName() <<std::endl;
+           // std::cout <<"container: "<< ptr->getContainerName() <<std::endl;
             
           /*  if (container==nullptr)
             {
@@ -278,7 +278,7 @@ void SaxStackVpz::pushModel(const xmlChar **att)
     }
   
     else if (xmlStrcmp(type, (const xmlChar *)"coupled") == 0) {
-		std::cout <<"couplé parsé"<< std::endl;
+		//std::cout <<"couplé parsé"<< std::endl;
         try {
             gmdl = new vpz::CoupledModel((const char *)name, cplparent);
         }

@@ -69,6 +69,7 @@ public:
 
  
     void addDynamics(std::unique_ptr<Dynamics> dynamics) override;
+    void addDynamics(std::unique_ptr<DynamicsComp> dynamics) override;
 
  
     const std::string &getName() const override;
@@ -176,7 +177,9 @@ public:
     {
         return m_observations;
     }
-
+ virtual bool isAtomic() const override { 
+			
+			return true; }
 private:
 	 vpz::AtomicModel *m_atomicModel;
     std::unique_ptr<Dynamics> m_dynamics;

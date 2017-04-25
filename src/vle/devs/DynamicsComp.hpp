@@ -27,23 +27,60 @@
 
 #ifndef VLE_DEVS_DYNAMICSCOMP_HPP
 #define VLE_DEVS_DYNAMICSCOMP_HPP
+#include <string>
+#include <vle/DllDefines.hpp>
+#include <vle/devs/ExternalEvent.hpp>
+#include <vle/devs/ExternalEventList.hpp>
+#include <vle/devs/InitEventList.hpp>
+#include <vle/devs/ObservationEvent.hpp>
+#include <vle/devs/Time.hpp>
+#include <vle/utils/Context.hpp>
+#include <vle/utils/PackageTable.hpp>
+#include <vle/utils/Types.hpp>
+#include <vle/value/Boolean.hpp>
+#include <vle/value/Double.hpp>
+#include <vle/value/Integer.hpp>
+#include <vle/value/String.hpp>
+#include <vle/value/Value.hpp>
+#include <vle/vle.hpp>
+#include <vle/vpz/MultiComponent.hpp>
+#include <vle/devs/AbstractDynamics.hpp>
 
-#include <vle/devs/Dynamics.hpp>
+#define DECLARE_DYNAMICSCOMP(mdl)                                                 \
+ extern "C" {                                                              \
+    VLE_MODULE vle::devs::DynamicsComp *                                          \
+    vle_make_new_dynamics(const vle::devs::DynamicsCompInit &init,                \
+                          const vle::devs::InitEventList &events)             \
+    {                                                                         \
+        return new mdl(init, events);                                         \
+    }                                                                         \
+                                                                              \
+    VLE_MODULE void vle_api_level(std::uint32_t *major,                       \
+                                  std::uint32_t *minor,                       \
+                                  std::uint32_t *patch)                       \
+    {                                                                         \
+        auto version = vle::version();                                        \
+        *major = std::get<0>(version);                                        \
+        *minor = std::get<1>(version);                                        \
+        *patch = std::get<2>(version);                                        \
+    }                                                                         \
+    }
 
+ 
 namespace vle { namespace devs {
 
-/**
- * A Dynamics proxy class that wraps an another Dynamics to show
- * debug information. This class inherits \e Dynamics class.
- */
-class DynamicsComp : public Dynamics
+
+ 
+ class RootCoordinator;
+// class AbstractDynamics;
+struct DynamicsCompInit;
+
+using PackageId = utils::PackageTable::index;
+ 
+class DynamicsComp //: public AbstractDynamics
 {
-private:    
-    std::string mName;
-    Time tn;
-    Time tl;
-    std::vector<std::unique_ptr<DynamicsComp>> influancer;
-    std::vector<std::unique_ptr<DynamicsComp>> influances;
+  
+  
 
 public:
     /**
@@ -52,13 +89,179 @@ public:
      * @param init The initialiser of Dynamics.
      * @param events The parameter from the experimental frame.
      */
-    DynamicsComp(const DynamicsInit& init,
-                const InitEventList& events);
+    DynamicsComp(const DynamicsCompInit &init, const InitEventList &events);
+    
+    
+	DynamicsComp(const DynamicsCompInit &init, const InitEventList &events, std::string name);
+    /**
+     * @brief Destructor (nothing to do)
+     */
+    virtual ~DynamicsComp() {}
+
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     /**
-     * @brief Destructor.
+     * @brief Process the initialization of the model by initializing the
+     * initial state and return the duration (or timeAdvance) of the initial
+     * state.
+     * @param time the time of the creation of this model.
+     * @return duration of the initial state.
      */
-    virtual ~DynamicsComp() = default;
+    virtual Time init(Time /* time */) {  std::cout  << " retour dyn init parent" << std::endl;
+		return infinity; }
+
+    /**
+     * @brief Process the output function: compute the output function.
+     * @param time the time of the occurrence of output function.
+     * @param output the list of external events (output parameter).
+     *
+     *
+     * @code
+     *
+     * //
+     * // output method's body examples
+     * // filling events
+     * //
+     * ...
+     * // send an empty event to the "output" port
+     * output.emplace_back("output");
+     * // send a string event to the "outputString" port
+     * output.emplace_back("outputString");
+     * output.back().addString("a String");
+     * // send a double event
+     * output.emplace_back("outputDouble");
+     * output.back().addDouble(.0);
+     * // send a map event
+     * output.emplace_back("outputMap");
+     * value::Map& m = output.back().addMap();
+     * m.addString("name",it->first);
+     * m.addDouble("value", it->second);
+     * ...
+     * @endcode
+     */
+    virtual void output(Time /* time */,
+                        ExternalEventList & /* output */) const
+    {
+    }
+
+    /**
+     * @brief Process the time advance function: compute the duration of the
+     * current state.
+     * @return duration of the current state.
+     */
+    virtual Time timeAdvance() const { return infinity; }
+
+    /**
+     * @brief Process an internal transition: compute the new state of the
+     * model with the internal transition function.
+     * @param time the date of occurence of this event.
+     */
+    virtual void internalTransition(Time /* time */) {}
+
+    /**
+     * @brief Process an external transition: compute the new state of the
+     * model when an external event occurs.
+     * @param event the external event with of the port.
+     * @param time the date of occurrence of this event.
+     *
+     *
+     * @code
+     * //
+     * // externalTransition method's body examples
+     * // to get the content of an event
+     * //
+     * ...
+     * vle::devs::ExternalEventList::const_iterator
+     * it = events.begin();
+     * while (it != events.end()) {
+     *    // to get a double
+     *    if (it->attributes()->isDouble()) {
+     *        Double aDouble = it->getDouble().value();
+     *    // to get a integer
+     *    } else if (it->attributes()->isInteger()) {
+     *        Int aInteger = it->getInteger().value();
+     *    // to get a string
+     *    } else if (it->attributes()->isString()) {
+     *       std::string aString = it->getString().value();
+     *    // to get a map and inside values
+     *    } else if (it->attributes()->isMap()) {
+     *       const value::Map& attrs = it->getMap();
+     *       std::string aString = attrs.getString("name").value();
+     *       double aDouble = attrs.getDouble("value").value();
+     *       ...
+     *    } else {
+     *    ...
+     *    }
+     * }
+     * ...
+     * @endcode
+     */
+    virtual void externalTransition(const ExternalEventList & /* event */,
+                                    Time /* time */)
+    {
+    }
+
+    /**
+     * @brief Process the confluent transition, by default,
+     * confluentTransitions call internalTransition and externalTransition
+     * but this function can be overidden to develop its own dynamics.
+     * @param time the time of the simulation.
+     * @param extEventlist the external events list.
+     */
+    virtual void confluentTransitions(Time time,
+                                      const ExternalEventList &extEventlist)
+    {
+        internalTransition(time);
+        externalTransition(extEventlist, time);
+    }
+
+    /**
+     * @brief Process an observation event: compute the current state of the
+     * model at a specified time and for a specified port.
+     * @param event the state event with of the port
+     * @return the value of state variable
+     *
+     *
+     * @code
+     * //
+     * // observation method's body example
+     * // to observe different Types of values
+     * //
+     * ...
+     * const std::string& port = event.getPortName();
+     * if (port == "doubleObservablePort") {
+     *    return value::Double::create(.0);
+     * } else if (port == "integerObservablePort") {
+     *    return value::Integer::create(1);
+     * } else if (port == "stringObservablePort") {
+     *    return  value::String::create("a string");
+     * } else if (port == "setObservablePort") {
+     *    std::unique_ptr<value::Set> set(new vle::value::Set());
+     *    set->add(value::Integer::create(1));
+     *    set->add(value::String::create("a string"));
+     *    ...
+     *    return set;
+     * }
+     * ...
+     * @endcode
+     */
+    virtual std::unique_ptr<vle::value::Value>
+    observation(const ObservationEvent & /* event */) const
+    {
+        return {};
+    }
+
+    /**
+     * @brief When the simulation of the atomic model is finished, the
+     * finish method is invoked.
+     */
+    virtual void finish() {}
+
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     /**
      * @brief If this function return true, then a cast to an Executive
@@ -67,84 +270,134 @@ public:
      * runtime of the simulation.
      * @return false if Dynamics is not an Executive.
      */
-    /*virtual bool isExecutive() const override
-    {
-        return mDynamics->isExecutive();
-    }*/
+    inline virtual bool isExecutive() const { return false; }
 
     /**
      * @brief If this function return true, then a cast to a DynamicsWrapper
      * object is produce and the set_model and set_library function are call.
      * @return false if Dynamics is not a DynamicsWrapper.
      */
-   
-    /**
-     * @brief Process the initialization of the model by initializing the
-     * initial state and return the duration (or timeAdvance) of the initial
-     * state.
-     * @param time the time of the creation of this model.
-     * @return duration of the initial state.
-     */
-    virtual Time init(Time time) override;
+    inline virtual bool isWrapper() const { return false; }
+
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     /**
-     * @brief Process the output function: compute the output function.
-     * @param time the time of the occurrence of output function.
-     * @param output the list of external events (output parameter).
+     * @brief Return a reference of the atomic model to which belongs the
+     * dynamics
+     * @return pointer on the atomic model
      */
-    virtual void output(Time time, ExternalEventList& output) const override;
+    inline const vle::vpz::MultiComponent &getModel() const { return m_model; }
 
     /**
-     * @brief Process the time advance function: compute the duration of the
-     * current state.
-     * @return duration of the current state.
+     * Return the name of the atomic model to which belongs the dynamics
+     *
+     * @return name of the atomic model
      */
-    virtual Time timeAdvance() const override;
+    inline const std::string &getModelName() const
+    {
+        return m_model.getName();
+    }
 
     /**
-     * @brief Process an internal transition: compute the new state of the
-     * model with the internal transition function.
-     * @param time the date of occurence of this event.
+     * Build an event list with a single event on a specified port at
+     * a specified time
+     *
+     * @param portName the name of port where the event will post
+     *
+     * @return the event list with the event
      */
-    virtual void internalTransition(Time time) override;
+    ExternalEvent *buildEvent(const std::string &portName) const;
+
+    /*  - - - - - - - - - - - - - --ooOoo-- - - - - - - - - - - -  */
 
     /**
-     * @brief Process an external transition: compute the new state of the
-     * model when an external event occurs.
-     * @param event the external event with of the port.
-     * @param time the date of occurrence of this event.
+     * @brief Get the package directory.
+     * @return The package path.
      */
-    virtual void
-        externalTransition(const ExternalEventList& event,
-                           Time time) override;
+    std::string getPackageDir() const;
 
     /**
-     * @brief Process the confluent transition: select the transition to
-     * call when an internal and one or more external event appear in the
-     * same time.
-     * @param internal the internal event.
-     * @param extEventlist the external events list.
+     * @brief Get the library package directory.
+     * @return The library package path.
      */
-    virtual void
-        confluentTransitions(Time time,
-                             const ExternalEventList& extEventlist) override;
+    std::string getPackageSimulatorDir() const;
 
     /**
-     * @brief Process an observation event: compute the current state of the
-     * model at a specified time and for a specified port.
-     * @param event the state event with of the port
-     * @return the value of state variable
+     * @brief Get the source package directory.
+     * @return The source package path.
      */
-    virtual std::unique_ptr<vle::value::Value>
-        observation(const ObservationEvent& event) const override;
+    std::string getPackageSrcDir() const;
 
     /**
-     * @brief When the simulation of the atomic model is finished, the
-     * finish method is invoked.
+     * @brief Get the data package directory.
+     * @return The data package path.
      */
-    virtual void finish() override;
+   std::string getPackageDataDir() const;
+
+    /**
+     * @brief Get the document package directory.
+     * @return The document package path.
+     */
+    std::string getPackageDocDir() const;
+
+    /**
+     * @brief Get the experiment package directory.
+     * @return The experiment package path.
+     */
+    std::string getPackageExpDir() const;
+
+    /**
+     * @brief Get the path of a package file.
+     * @param name The name of the file.
+     * @return The patch of the file.
+     */
+    std::string getPackageFile(const std::string &name) const;
+
+    /**
+     * @brief Get the path of a library package file.
+     * @param name The name of the file.
+     * @return The patch of the file.
+     */
+    std::string getPackageLibFile(const std::string &name) const;
+
+    /**
+     * @brief Get the path of a source package file.
+     * @param name The name of the file.
+     * @return The patch of the file.
+     */
+    std::string getPackageSrcFile(const std::string &name) const;
+
+    /**
+     * @brief Get the path of a data package file.
+     * @param name The name of the file.
+     * @return The patch of the file.
+     */
+    std::string getPackageDataFile(const std::string &name) const;
+
+    /**
+     * @brief Get the path of a document package file.
+     * @param name The name of the file.
+     * @return The patch of the file.
+     */
+    std::string getPackageDocFile(const std::string &name) const;
+
+    /**
+     * @brief Get the path of an experiment package file.
+     * @param name The name of the file.
+     * @return The patch of the file.
+     */
+    std::string getPackageExpFile(const std::string &name) const;
+
+    /*  - - - - - - - - - - - - - --ooOoo-- - - - - - - - - - - -  */
+
+    /**
+     * Get a Context shared pointer.
+     */
+   utils::ContextPtr context() const noexcept { return m_context; }
     
-    void setTn(Time time)
+     void setTn(Time time)
     {
 		tl = tn;
 		tn = time;
@@ -161,43 +414,26 @@ public:
 	
 	std::string getName()
 	{
-		return mName;
+		return m_Name;
 	}
-	/*
-	void setInfluancer(std::vector<std::unique_ptr<DynamicsComp>> comps)
-	{
-		influancer (comps);
-	}
-	void setInfluances(std::vector<std::unique_ptr<DynamicsComp>> comps)
-	{
-		influances (comps);
-	}
-	
-	void addInfluancer(DynamicsComp *comp)
-	{
-		influancer.push_back(std::unique_ptr<Dynamics>(std::move(comp)));
-	}
-	void addInfluances(std::unique_ptr<DynamicsComp> comp)
-	{
-		influances.push_back(std::move(comp));
-	}
-	void removeInfluancer(std::unique_ptr<DynamicsComp> comp)
-	{
-	}
-	void removeInfluances(std::unique_ptr<DynamicsComp> comp)
-	{
-	}
-	
-	/*std::vector<std::unique_ptr<DynamicsComp>>  getInfluancer()
-	{
-		return std::move(influancer);
-	}
-	
-	std::vector<std::unique_ptr<DynamicsComp>>  getInfluances()
-	{
-		return influances;
-	}
-	 */
+
+
+private:
+  std::string m_Name;
+    Time tn;
+    Time tl;
+    std::vector<std::unique_ptr<DynamicsComp>> influancer;
+    std::vector<std::unique_ptr<DynamicsComp>> influances;
+    
+    ///< A reference to the context.
+    utils::ContextPtr m_context;
+
+    ///< A constant reference to the atomic model node of the graph.
+    const vpz::MultiComponent &m_model;
+
+    ///< An iterator to std::set of the vle::utils::PackageTable.
+    PackageId m_packageid;
+ 
 };
 
 }} // namespace vle devs

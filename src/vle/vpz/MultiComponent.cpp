@@ -186,7 +186,10 @@ void MultiComponent::purgeConditions(const std::set < std::string >&
 void MultiComponent::addComponent(Component *c)
 {
 	ComponentList.push_back(c);
+	if(!c->dynamics().empty())
+	{
 	m_dynamics.push_back(c->dynamics());
+	}
 	std::cout<< "sim.addcomponent: " << c->dynamics() << std::endl;
 }
 	

@@ -163,9 +163,9 @@ for(auto &elem : model->dynamics()){
     
    
 
-    
-    }
     coordinator.processInit(sim);
+    }
+    
 }
 
 
@@ -199,8 +199,16 @@ void ModelFactory::createModels(Coordinator &coordinator,
             
         }
  std::cout << "atomicModelList: "<< atomicmodellist.size()<< "  multicomponentlist: "<< multicomponentlist.size() << "  Componentlist: "<< componentlist.size()<< std::endl;
-        
-         for (auto &elem : multicomponentlist) {
+        for (auto &elem : atomicmodellist) {
+            createModel(coordinator,
+                        mExperiment.conditions(),
+                        elem,
+                        (elem)->dynamics(),
+                        (elem)->conditions(),
+                        (elem)->observables());
+       
+        }
+         /* for (auto &elem : multicomponentlist) {
             createMulticomponent(coordinator,
                         mExperiment.conditions(),
                         elem,
@@ -212,17 +220,6 @@ void ModelFactory::createModels(Coordinator &coordinator,
       
 		
         }
-        
-        for (auto &elem : atomicmodellist) {
-            createModel(coordinator,
-                        mExperiment.conditions(),
-                        elem,
-                        (elem)->dynamics(),
-                        (elem)->conditions(),
-                        (elem)->observables());
-       
-        }
-         
         /*
         for (auto &elem : componentlist) {
 		
@@ -374,7 +371,14 @@ std::unique_ptr<Dynamics> buildNewDynamics(utils::ContextPtr context,
 
         DynamicsInit init{
             context, *atom->getStructure(), pkg_table.get(dyn.package())};
-           
+            //Dynamics d;
+           // const DynamicsCompInit& initi{
+           // context, *atom->getStruc(), pkg_table.get(dyn.package())}; 
+        //DynamicsComp *dc = new DynamicsComp(initi,events,"toto"); 
+     /*   vpz::MultiComponent *m;
+              DynamicsInit initia{
+            context, *m, pkg_table.get(dyn.package())};
+            DynamicsComp *d = new DynamicsComp(initia,events);*/ 
         auto dynamics = std::unique_ptr<Dynamics>(fct(init, events));
 
         if (haveEventView(vpzviews, observable)) {

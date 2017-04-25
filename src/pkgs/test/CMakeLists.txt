@@ -1,6 +1,7 @@
 
 add_executable(test_vle_output test_vle_output.cpp 
   ${CMAKE_SOURCE_DIR}/src/vle/devs/Dynamics.cpp
+  ${CMAKE_SOURCE_DIR}/src/vle/devs/DynamicsComp.cpp
   ${CMAKE_SOURCE_DIR}/src/vle/devs/DynamicsDbg.cpp
   ${CMAKE_SOURCE_DIR}/src/vle/devs/RootCoordinator.cpp
   ${CMAKE_SOURCE_DIR}/src/vle/devs/Coordinator.cpp

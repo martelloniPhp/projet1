@@ -44,6 +44,7 @@
 #include <vle/value/Value.hpp>
 #include <vle/vle.hpp>
 #include <vle/vpz/AtomicModel.hpp>
+#include <vle/devs/AbstractDynamics.hpp>
 
 #define DECLARE_DYNAMICS(mdl)                                                 \
     extern "C" {                                                              \
@@ -77,7 +78,8 @@ using PackageId = utils::PackageTable::index;
  * @brief Dynamics class represent a part of the DEVS simulator. This class
  * must be inherits to build simulation components.
  */
-class VLE_API Dynamics {
+class VLE_API Dynamics //: AbstractDynamics 
+{
 public:
     /**
      * @brief Constructor of Dynamics for an atomic model.
@@ -103,7 +105,8 @@ public:
      * @param time the time of the creation of this model.
      * @return duration of the initial state.
      */
-    virtual Time init(Time /* time */) { return infinity; }
+    virtual Time init(Time /* time */) { 
+		return infinity; }
 
     /**
      * @brief Process the output function: compute the output function.

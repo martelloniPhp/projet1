@@ -34,6 +34,7 @@
 #include <vle/devs/ExternalEventList.hpp>
 #include <vle/devs/Scheduler.hpp>
 #include <vle/devs/Dynamics.hpp>
+#include <vle/devs/DynamicsComp.hpp>
 #include <vle/devs/View.hpp>
 #include <vle/vpz/AtomicModel.hpp>
 
@@ -64,7 +65,7 @@ public:
 
   
      virtual void addDynamics(std::unique_ptr<Dynamics> dynamics) =0;
-
+	 virtual void addDynamics(std::unique_ptr<DynamicsComp> dynamics) =0;
    
      virtual const std::string &getName()const =0;
 
@@ -131,6 +132,12 @@ public:
      virtual void resetInternalEvent()=0;
 
      virtual std::vector<Observation> &getObservations()=0;
+     
+      virtual bool isAtomic() const
+        { return false; }
+		virtual bool isMulti() const
+        { 
+			return false; }
 
 private:
     /*std::unique_ptr<Dynamics> m_dynamics;

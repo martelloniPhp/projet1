@@ -71,7 +71,7 @@ public:
 
   
     void addDynamics(std::unique_ptr<Dynamics> dynamics) override;
-    void addDynamics(std::unique_ptr<DynamicsComp> dynamics);
+    void addDynamics(std::unique_ptr<DynamicsComp> dynamics) override;
     void addDynamics(std::vector<std::unique_ptr<DynamicsComp>> *dynamics);
 
   
@@ -101,7 +101,7 @@ public:
 
     int nbDynamics()
     {
-		return m_dynamics->size();
+		return m_dynamics.size();
 	}
     void updateSimulatorTargets(const std::string &port) override; 
 
@@ -191,10 +191,12 @@ public:
     {
         return m_observations;
     }
-
+	virtual bool isMulti() const override { 
+			
+			return true; }
 
 private:
-    std::vector<std::unique_ptr<DynamicsComp>> *m_dynamics;
+    std::vector<std::unique_ptr<DynamicsComp>> m_dynamics;
     vpz::MultiComponent *m_multiComponent;
     TargetSimulatorList mTargets;
     //SchedulerMulti m_eventTable;
