@@ -368,6 +368,11 @@ std::unique_ptr<Dynamics> buildNewDynamics(utils::ContextPtr context,
     typedef Dynamics *(*fctdyn)(const DynamicsInit &, const InitEventList &);
 
     fctdyn fct = utils::functionCast<fctdyn>(symbol);
+      if(symbol == nullptr){
+			std::cout << "symbol null" << std::endl;
+		}else{
+			std::cout << "symbol non null" << std::endl;
+		}
 	
     try {
         utils::PackageTable pkg_table;
@@ -446,21 +451,22 @@ const InitEventList ev;
         DynamicsComp *d = new DynamicsComp(init,events,dyn.name()); 
         //DynamicsComp *d = fct(init, events);
         //DynamicsComp d(init,events);
-         std::cout << "dynamique instancié " <<  d->getName()  << std::endl;  
+         //std::cout << "dynamique instancié " <<  d->getName()  << std::endl;  
         //std::cout << " init dyn "<< init.model.getName() << " init package = " << dyn.package() << std::endl;
-        if(context == nullptr){
-			std::cout << "context null" << std::endl;
+        if(symbol == nullptr){
+			std::cout << "symbol null" << std::endl;
 		}else{
-			std::cout << "context non null" << std::endl;
+			std::cout << "symbol non null" << symbol << std::endl;
 		}
 		//fct(init, events);
-        //auto dynamicss = std::unique_ptr<Dynamics>(fcte(initi, events));
-       //auto dynamics = std::unique_ptr<DynamicsComp>(fct(init, events));
+        //auto dynamicss = std::unique_ptr<DynamicsComp>(fct(init, events));
+       auto dynamics = std::unique_ptr<DynamicsComp>(fct(init, events));
         auto d2= std::unique_ptr<DynamicsComp>(d);
        // delete d;
-		std::unique_ptr<DynamicsComp> 
-		dynamics = nullptr; 
-            return d2;
+		/*std::unique_ptr<DynamicsComp> 
+		dynamics = nullptr; */
+            //return d2;
+            return dynamics;
         
     }
     catch (const std::exception &e) {
@@ -625,10 +631,43 @@ ModelFactory::attacheDynamics(Coordinator &coordinator,
 {
    // std::cout << "attach dynamicsComp" << std::endl;
 void *symbol = nullptr;
+ auto type = utils::Context::ModuleType::MODULE_DYNAMICS;
+	    try {
+        /* If \e package is not empty we assume that library is the shared
+         * library. Otherwise, we load the global symbol stores in \e
+         * library/executable and we cast it into a \e
+         * vle::devs::Dynamics... Only useful for unit test or to build
+         * executable with dynamics.
+         */
+        if (not dyn.package().empty()) {
+            symbol = mContext->get_symbol(
+                dyn.package(),
+                dyn.library(),
+                utils::Context::ModuleType::MODULE_DYNAMICS,
+                &type);
+        }
+       /* else {
+            symbol = mContext->get_symbol(dyn.library());
 
-	
+            if (dyn.library().length() >= 4) {
+                if (dyn.library().compare(0, 4, "exe_") == 0)
+                    type =
+                        utils::Context::ModuleType::MODULE_DYNAMICS_EXECUTIVE;
+                else if (dyn.library().compare(0, 4, "wra_") == 0)
+                    type = utils::Context::ModuleType::MODULE_DYNAMICS_WRAPPER;
+            }
+        }*/
+    }
+    catch (const std::exception &e) {
+        throw utils::ModellingError(
+            (fmt(_("Dynamic library loading problem: cannot get any"
+                   " dynamics, executive or wrapper '%1%' in library"
+                   " '%2%' package '%3%'\n:%4%")) %
+             dyn.name() % dyn.library() % dyn.package() % e.what())
+                .str());
+    }
  
-        
+   
   std::unique_ptr<DynamicsComp> result = buildDynamics(mContext,
                                 mEventViews,
                                 mExperiment.views(),
@@ -637,6 +676,7 @@ void *symbol = nullptr;
                                 dyn,
                                 events,
                                 symbol);
+							
                                 
  //   std::cout << "attach dynamicsComp" << std::endl;                      
                                 

@@ -288,6 +288,7 @@ public:
         MODULE_DYNAMICS, /*|< The @e Module is a simulator and it needs to
                           * have the following symbol: @c
                           * vle_make_new_dynamics. */
+                
 
         MODULE_DYNAMICS_WRAPPER, /*!< The @e Module is a simulator and it
                                    needs to have the following symbols: @c

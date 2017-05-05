@@ -130,7 +130,7 @@ void BaseModel::getAtomicModelsTarget(const std::string& portname,
             const std::string& port(it->second);
             BaseModel* mdl(it->first);
 
-            if (mdl->isAtomic()) {
+            if (mdl->isAtomic() || mdl->isMulti()) {
                 result.add(mdl, port);
             } else {
                 CoupledModel* cpled = mdl->toCoupled();

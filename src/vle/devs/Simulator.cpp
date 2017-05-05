@@ -36,17 +36,7 @@ namespace vle
 namespace devs
 {
 
-Simulator::Simulator(vpz::AtomicModel *atomic)
-    : m_atomicModel(atomic)
-    , m_tn(negativeInfinity)
-    , m_have_handle(false)
-    , m_have_internal(false)
-{
-    assert(atomic && "Simulator: missing vpz::AtomicMOdel");
 
-    m_atomicModel->m_simulator = this;
-     std::cout << "simulateur atomic créé"<< std::endl;
-}
 
 void Simulator::updateSimulatorTargets(const std::string &port)
 {
@@ -63,135 +53,26 @@ void Simulator::updateSimulatorTargets(const std::string &port)
     }
 
     for (auto &elem : result)
+    {
+		std::cout << "updateSimulatorTargets 5 "<< elem.first->isAtomic() << std::endl;
+		if(elem.first->isAtomic()){
         mTargets.emplace(port,
                          TargetSimulator(static_cast<vpz::AtomicModel *>(
                                              elem.first)->get_simulator(),
                                          elem.second));
+									 }
+		if(elem.first->isMulti()){
+			std::cout << "updateSimulatorTargets 6 " << std::endl;
+        mTargets.emplace(port,
+                         TargetSimulator((static_cast<vpz::MultiComponent *>(
+                                             elem.first)) ->get_simulator(),
+                                         elem.second));
+									 }
+	}
+        
 }
 
-std::pair<Simulator::iterator, Simulator::iterator>
-Simulator::targets(const std::string &port)
-{
-    auto x = mTargets.equal_range(port);
 
-    // If the updateSimulatorTargets function was never call, we update
-    // the simulator targets and try to retrieve the newest simulator
-    // targets.
-    if (x.first == x.second) {
-        updateSimulatorTargets(port);
-        x = mTargets.equal_range(port);
-    }
 
-    if (x.first->second.first == nullptr)
-        return {mTargets.end(), mTargets.end()};
-
-    return x;
-}
-
-void Simulator::removeTargetPort(const std::string &port)
-{
-    auto it = mTargets.find(port);
-
-    if (it != mTargets.end()) {
-        mTargets.erase(it);
-    }
-}
-
-void Simulator::addTargetPort(const std::string &port)
-{
-    assert(mTargets.find(port) == mTargets.end());
-
-    mTargets.insert(value_type(
-        port, TargetSimulator((Simulator *)nullptr, std::string())));
-}
-
-void Simulator::addDynamics(std::unique_ptr<Dynamics> dynamics)
-{
-    m_dynamics = std::unique_ptr<Dynamics>(std::move(dynamics));
-     std::cout << "add dynamics into simulator" << std::endl;
-}
-
-const std::string &Simulator::getName() const
-{
-    if (not m_atomicModel)
-        throw utils::InternalError(_("Simulator destroyed"));
-
-    return m_atomicModel->getName();
-}
-
-void Simulator::finish() { m_dynamics->finish(); }
-
-void Simulator::output(Time time)
-{
-    assert(m_result.empty());
-
-    m_dynamics->output(time, m_result);
-}
-
-Time Simulator::timeAdvance()
-{
-    Time tn = m_dynamics->timeAdvance();
-
-    if (tn < 0.0)
-        throw utils::ModellingError(
-            (fmt(_("Negative time advance in '%1%' (%2%)")) % getName() % tn)
-                .str());
-
-    return tn;
-}
-
-Time Simulator::init(Time time)
-{
-    Time tn = m_dynamics->init(time);
-
-    if (tn < 0.0)
-        throw utils::ModellingError(
-            (fmt(_("Negative init function in '%1%' (%2%)")) % getName() % tn)
-                .str());
-
-    m_tn = tn + time;
-    return m_tn;
-}
-
-Time Simulator::confluentTransitions(Time time)
-{
-    assert(not m_external_events.empty() and "Simulator d-conf error");
-    assert(m_have_internal == true and "Simulator d-conf error");
-    m_dynamics->confluentTransitions(time, m_external_events);
-
-    m_external_events.clear();
-    m_have_internal = false;
-
-    m_tn = timeAdvance() + time;
-    return m_tn;
-}
-
-Time Simulator::internalTransition(Time time)
-{
-    assert(m_have_internal == true and "Simulator d-int error");
-    m_dynamics->internalTransition(time);
-
-    m_have_internal = false;
-
-    m_tn = timeAdvance() + time;
-    return m_tn;
-}
-
-Time Simulator::externalTransition(Time time)
-{
-    assert(not m_external_events.empty() and "Simulator d-ext error");
-    m_dynamics->externalTransition(m_external_events, time);
-
-    m_external_events.clear();
-
-    m_tn = timeAdvance() + time;
-    return m_tn;
-}
-
-std::unique_ptr<value::Value>
-Simulator::observation(const ObservationEvent &event) const
-{
-    return m_dynamics->observation(event);
-}
 }
 } // namespace vle devs

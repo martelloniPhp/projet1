@@ -38,7 +38,7 @@
 #include <vle/devs/View.hpp>
 #include <vle/vpz/MultiComponent.hpp>
 #include <vle/devs/Simulator.hpp>
-
+#include <vle/vpz/AtomicModel.hpp>
 
 namespace vle
 {

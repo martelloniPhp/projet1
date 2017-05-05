@@ -32,6 +32,7 @@
 #include <vle/vle.hpp>
 #include <unordered_map>
 #include <boost/version.hpp>
+#include <iostream>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -141,6 +142,7 @@ struct Module
         }
 
         if (not mFunction) {
+			
             switch (mType) {
             case Context::ModuleType::MODULE_DYNAMICS:
             case Context::ModuleType::MODULE_DYNAMICS_EXECUTIVE:
@@ -159,8 +161,10 @@ struct Module
                             mType = Context::ModuleType::MODULE_DYNAMICS_WRAPPER;
                     else
                         mType = Context::ModuleType::MODULE_DYNAMICS_EXECUTIVE;
-                else
+                else{
                     mType = Context::ModuleType::MODULE_DYNAMICS;
+                    std::cout << "module.get 1" << std::endl;
+				}
                 break;
             case Context::ModuleType::MODULE_OOV:
                 if (not (mFunction = (getSymbol("vle_make_new_oov"))))
@@ -172,7 +176,7 @@ struct Module
                 throw utils::InternalError(_("Missing type"));
             }
         }
-
+std::cout << "module.get 2" << std::endl;
         return mFunction;
     }
 
@@ -307,6 +311,7 @@ public:
 
     void *get(const std::string& symbol)
     {
+		std::cout << "symboleTble.get symbol: " << symbol << std::endl;
         const_iterator it = mLst.find(symbol);
 
         // Already in cache, returns the symbol.
@@ -714,6 +719,7 @@ void* Context::get_symbol(const std::string& package,
                           Context::ModuleType type,
                           Context::ModuleType *newtype)
 {
+	 std::cout << "contextmodule.get_symbole 1" << std::endl;
     if (not m_pimpl->modules)
         m_pimpl->modules = std::make_shared<ModuleManager>(this);
 
@@ -723,12 +729,13 @@ void* Context::get_symbol(const std::string& package,
     const auto& module = m_pimpl->modules->getModule(package, library, type);
     auto *result = module->get();
     *newtype = module->mType;
-
+std::cout << "contextmodule.get_symbole 2 reesult: " << module->mLibrary << std::endl;
     return result;
 }
 
 void* Context::get_symbol(const std::string& pluginname)
 {
+    
     if (not m_pimpl->modules)
         m_pimpl->modules = std::make_shared<ModuleManager>(this);
 

@@ -122,8 +122,9 @@ void Coordinator::run()
     if (nb_dynamics > 0) {
         for (std::size_t i = 0; i != nb_dynamics; ++i)
             bag.dynamics[i]->output(m_currentTime);
-
+		
         dispatchExternalEvent(bag.dynamics, nb_dynamics);
+       
     }
 
     if (nb_executive > 0) {
@@ -164,6 +165,7 @@ void Coordinator::run()
                     elem->confluentTransitions(m_currentTime);
             }
             else {
+				std::cout << "lance deeltaExt"<< std::endl;
                 elem->externalTransition(m_currentTime);
             }
         }
@@ -404,6 +406,8 @@ void Coordinator::getSimulatorsSource(
     const std::string &port,
     std::vector<std::pair<Simulator *, std::string>> &lst)
 {
+	
+	std::cout << "coord->getsimulatorSource 1" << std::endl;
     if (m_isStarted) {
         vpz::ModelPortList result;
         model->getAtomicModelsSource(port, result);
@@ -417,7 +421,7 @@ void Coordinator::getSimulatorsSource(
 
 void Coordinator::updateSimulatorsTarget(
     std::vector<std::pair<Simulator *, std::string>> &lst)
-{
+{ std::cout << "coord->updateSimulatorsTarget 1" << std::endl;
     if (m_isStarted) {
         for (auto &elem : lst) {
             if (elem.first != nullptr) {
@@ -489,14 +493,19 @@ void Coordinator::addModels(const vpz::Model &model)
 void Coordinator::dispatchExternalEvent(std::vector<Simulator*> &simulators,
                                         const std::size_t number)
 {
+	
     for (std::size_t i = 0; i != number; ++i) {
+		std::cout << "dispatchExternalEvent 1 simulateur: " << simulators[i]->getName() << " result: " << simulators[i]->result().empty()<< std::endl;
         if (simulators[i]->result().empty())
             continue;
-
+		std::cout << "dispatchExternalEvent 2"<< std::endl;
         auto &eventList = simulators[i]->result();
+        std::cout << "dispatchExternalEvent 3 eventListsize: "<< eventList.size() << std::endl;
         for (auto &elem : eventList) {
+			
+			std::cout << "dispatchExternalEvent 4 simulateur: " << simulators[i]->getName() << " port: "<< elem.getPortName() << std::endl;
             auto x = simulators[i]->targets(elem.getPortName());
-
+			std::cout << "dispatchExternalEvent 5"<< std::endl;
             if (x.first != x.second and x.first->second.first) {
                 for (auto jt = x.first; jt != x.second; ++jt)
                     m_eventTable.addExternal(jt->second.first,
@@ -507,6 +516,7 @@ void Coordinator::dispatchExternalEvent(std::vector<Simulator*> &simulators,
 
         simulators[i]->clear_result();
     }
+    std::cout << "dispatchExternalEvent 6"<< std::endl;
 }
 
 void Coordinator::buildViews()

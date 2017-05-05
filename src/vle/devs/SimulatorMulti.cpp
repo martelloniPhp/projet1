@@ -64,17 +64,26 @@ void SimulatorMulti::updateSimulatorTargets(const std::string &port)
     }
 
     for (auto &elem : result)
+    {
+		
+                                         
+		if(elem.first->isMulti()){
+			std::cout << "updateSimulatorTargets 6 " << std::endl;
         mTargets.emplace(port,
                          TargetSimulator(static_cast<vpz::MultiComponent *>(
                                              elem.first)->get_simulator(),
                                          elem.second));
+									 }											 
+									 
+									 }
 }
 
 std::pair<SimulatorMulti::iterator, SimulatorMulti::iterator>
 SimulatorMulti::targets(const std::string &port)
 {
+	std::cout << "sim->target 1"<< std::endl;
     auto x = mTargets.equal_range(port);
-
+std::cout << "sim->target 2"<< std::endl;
     // If the updateSimulatorTargets function was never call, we update
     // the simulator targets and try to retrieve the newest simulator
     // targets.
@@ -82,10 +91,10 @@ SimulatorMulti::targets(const std::string &port)
         updateSimulatorTargets(port);
         x = mTargets.equal_range(port);
     }
-
+std::cout << "sim->target 3"<< std::endl;
     if (x.first->second.first == nullptr)
         return {mTargets.end(), mTargets.end()};
-
+std::cout << "sim->target 4"<< std::endl;
     return x;
 }
 
@@ -200,8 +209,8 @@ Time SimulatorMulti::init(Time time)
 
     m_tn = tn + time;
     std::cout  << " time init " << m_tn << std::endl;
-   // return m_tn;
-    return 0;
+    return m_tn;
+   // return 0;
 }
 
 Time SimulatorMulti::confluentTransitions(Time time)
@@ -238,17 +247,14 @@ for (auto &dyn : m_dynamics)
 Time SimulatorMulti::internalTransition(Time time)
 {
     assert(m_have_internal == true and "Simulator d-int error");
-    std::cout  << " delta int 1" <<  std::endl;
-    for (auto &dyn : m_dynamics)
+        for (auto &dyn : m_dynamics)
     {
     dyn->internalTransition(time);
 	}
-	std::cout  << " delta int 2" <<  std::endl;
-    m_have_internal = false;
+	    m_have_internal = false;
 
     m_tn = timeAdvance() + time;
-    std::cout  << " delta int 3" <<  std::endl;
-    return m_tn;
+        return m_tn;
 }
 
 Time SimulatorMulti::externalTransition(Time time)

@@ -71,14 +71,14 @@ public:
 
    
      virtual const vpz::AtomicModel  *getStructure() const =0; 
-     //virtual const T *getStructure() const =0; 
+     
      virtual const vpz::MultiComponent *getStruc() const =0;
      
      
      virtual const std::unique_ptr<Dynamics> &dynamics() const=0;
 
    
-     virtual void updateSimulatorTargets(const std::string &port) =0;
+     virtual void updateSimulatorTargets(const std::string &port)=0;
 
     
      virtual std::pair<iterator, iterator> targets(const std::string &port) =0;

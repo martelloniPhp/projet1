@@ -37,6 +37,7 @@
 #include <vle/devs/View.hpp>
 #include <vle/vpz/AtomicModel.hpp>
 #include <vle/devs/Simulator.hpp>
+#include <vle/vpz/MultiComponent.hpp>
 
 namespace vle
 {
@@ -45,6 +46,7 @@ namespace devs
 
 class Dynamics;
 class Simulator;
+class MultiComponent;
 
 
 /**
@@ -181,7 +183,7 @@ public:
 			
 			return true; }
 private:
-	 vpz::AtomicModel *m_atomicModel;
+	vpz::AtomicModel *m_atomicModel;
     std::unique_ptr<Dynamics> m_dynamics;
    
     TargetSimulatorList mTargets;

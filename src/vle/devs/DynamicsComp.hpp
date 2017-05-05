@@ -110,7 +110,7 @@ public:
      * @return duration of the initial state.
      */
     virtual Time init(Time /* time */) {  std::cout  << " retour dyn init parent" << std::endl;
-		return infinity; }
+		return 0; }
 
     /**
      * @brief Process the output function: compute the output function.
@@ -142,8 +142,9 @@ public:
      * @endcode
      */
     virtual void output(Time /* time */,
-                        ExternalEventList & /* output */) const
+                        ExternalEventList &  /*output*/ ) const
     {
+		//output.emplace_back("output");
     }
 
     /**
@@ -151,14 +152,14 @@ public:
      * current state.
      * @return duration of the current state.
      */
-    virtual Time timeAdvance() const { return infinity; }
+    virtual Time timeAdvance() const { return 1; }
 
     /**
      * @brief Process an internal transition: compute the new state of the
      * model with the internal transition function.
      * @param time the date of occurence of this event.
      */
-    virtual void internalTransition(Time /* time */) {}
+    virtual void internalTransition(Time /* time */) {std::cout  << " delta int parent" << std::endl;}
 
     /**
      * @brief Process an external transition: compute the new state of the
@@ -201,6 +202,7 @@ public:
     virtual void externalTransition(const ExternalEventList & /* event */,
                                     Time /* time */)
     {
+		std::cout  << " delta ext parent" << std::endl;
     }
 
     /**
