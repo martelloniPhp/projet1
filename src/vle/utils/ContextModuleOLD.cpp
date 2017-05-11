@@ -145,9 +145,10 @@ struct Module
 			
             switch (mType) {
             case Context::ModuleType::MODULE_DYNAMICS:
+            case Context::ModuleType::MODULE_DYNAMICSCOMP:
             case Context::ModuleType::MODULE_DYNAMICS_EXECUTIVE:
             case Context::ModuleType::MODULE_DYNAMICS_WRAPPER:
-           //  if (! (mFunction = (getSymbol("vle_make_new_dynamicsComp"))))
+             if (! (mFunction = (getSymbol("vle_make_new_dynamics"))))
                 if (! (mFunction = (getSymbol("vle_make_new_dynamics"))))
                     if (! (mFunction = (getSymbol("vle_make_new_executive"))))
                         if (! (mFunction = (getSymbol("vle_make_new_dynamics_wrapper"))))
@@ -166,10 +167,10 @@ struct Module
                     mType = Context::ModuleType::MODULE_DYNAMICS;
                     std::cout << "module.get 1" << std::endl;
 				}
-			/*else{
+			else{
                     mType = Context::ModuleType::MODULE_DYNAMICSCOMP;
                     std::cout << "module.get comp 1" << std::endl;
-			}*/
+			}
                 break;
             case Context::ModuleType::MODULE_OOV:
                 if (not (mFunction = (getSymbol("vle_make_new_oov"))))

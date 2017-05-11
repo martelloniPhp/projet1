@@ -77,7 +77,7 @@ struct DynamicsCompInit;
 
 using PackageId = utils::PackageTable::index;
  
-class DynamicsComp //: public AbstractDynamics
+class VLE_API DynamicsComp //: public AbstractDynamics
 {
   
   
