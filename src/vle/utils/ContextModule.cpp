@@ -164,7 +164,7 @@ struct Module
                         mType = Context::ModuleType::MODULE_DYNAMICS_EXECUTIVE;
                 else{
                     mType = Context::ModuleType::MODULE_DYNAMICS;
-                    std::cout << "module.get 1" << std::endl;
+                    
 				}
 			/*else{
                     mType = Context::ModuleType::MODULE_DYNAMICSCOMP;
@@ -181,7 +181,7 @@ struct Module
                 throw utils::InternalError(_("Missing type"));
             }
         }
-std::cout << "module.get 2" << std::endl;
+
         return mFunction;
     }
 

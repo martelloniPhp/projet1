@@ -46,7 +46,7 @@ SimulatorMulti::SimulatorMulti(vpz::MultiComponent *atomic)
     assert(atomic && "Simulator: missing vpz::MultiComponent");
 
     m_multiComponent->m_simulator = this;
-    std::cout << "simulateur multi créé"<< std::endl;
+   
 }
 
 void SimulatorMulti::updateSimulatorTargets(const std::string &port)
@@ -125,7 +125,7 @@ void SimulatorMulti::addDynamics(std::unique_ptr<Dynamics> dynamics)
 void SimulatorMulti::addDynamics(std::unique_ptr<DynamicsComp> dynamics)
 {
     
-    std::cout << "add dynamics Comp " << dynamics->getName() <<" au model: " << dynamics->getModelName() << std::endl;
+    
     m_dynamics.push_back(std::move(dynamics));
 }
 void SimulatorMulti::addDynamics(std::vector<std::unique_ptr<DynamicsComp>> *dynamics)
@@ -149,14 +149,14 @@ void SimulatorMulti::finish()
 void SimulatorMulti::output(Time time)
 {
     assert(m_result.empty());
-//std::cout  << " output" << std::endl;
+//std::cout  << " output simulator multi" << std::endl;
     //m_dynamics->output(time, m_result);
      for (auto &dyn : m_dynamics)
     {
-		std::cout << dyn->getName() << " output" << std::endl;
-		if(dyn->getTn() == time){
+		
+		//if(dyn->getTn() == time){
 		dyn->output(time, m_result);
-	}
+	//}
 		
 	}
 }
@@ -179,8 +179,8 @@ Time SimulatorMulti::timeAdvance()
         throw utils::ModellingError(
             (fmt(_("Negative time advance in '%1%' (%2%)")) % getName() % tn)
                 .str());
-tn =1;
-std::cout  << " time advence " << tn << std::endl;
+std::cout  << " time advance: " << tn << std::endl;
+
     return tn;
     
 }
@@ -193,9 +193,9 @@ Time SimulatorMulti::init(Time time)
     for (auto &dyn : m_dynamics)
     {
       temp = dyn->init(time);
-      std::cout  << " retour dyn init " << dyn->init(time) << std::endl;
+     
       //m_eventTable.init(temp);
-      std::cout  << " temp:" << temp << " tn " << tn << " comparaison: " << (temp < tn) << std::endl;
+     
       if(temp < tn)
       {
 		  tn = temp;
@@ -208,7 +208,7 @@ Time SimulatorMulti::init(Time time)
                 .str());
 
     m_tn = tn + time;
-    std::cout  << " time init " << m_tn << std::endl;
+   // std::cout  << " time init " << m_tn << std::endl;
     return m_tn;
    // return 0;
 }
@@ -251,10 +251,12 @@ Time SimulatorMulti::internalTransition(Time time)
     {
     dyn->internalTransition(time);
 	}
-	    m_have_internal = false;
+	m_have_internal = false;
 
     m_tn = timeAdvance() + time;
-        return m_tn;
+    std::cout << "deltaint: m_tn: " << m_tn << std::endl;
+    
+    return m_tn;
 }
 
 Time SimulatorMulti::externalTransition(Time time)
