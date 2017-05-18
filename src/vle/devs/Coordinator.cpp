@@ -101,7 +101,7 @@ void Coordinator::init(const vpz::Model &mdls, Time current, Time duration)
 
 void Coordinator::run()
 {
-	std::cout << "run" << std::endl;
+	
     Bag &bag = m_eventTable.getCurrentBag();
     if (not bag.dynamics.empty() or not bag.executives.empty())
         m_currentTime = m_eventTable.getCurrentTime();

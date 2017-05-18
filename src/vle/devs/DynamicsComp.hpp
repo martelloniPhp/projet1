@@ -42,6 +42,7 @@
 #include <vle/value/Integer.hpp>
 #include <vle/value/String.hpp>
 #include <vle/value/Value.hpp>
+#include <vle/utils/State.hpp>
 #include <vle/vle.hpp>
 #include <vle/vpz/MultiComponent.hpp>
 #include <vle/devs/AbstractDynamics.hpp>
@@ -72,7 +73,7 @@ namespace vle { namespace devs {
 
  
  class RootCoordinator;
-// class AbstractDynamics;
+ class State;
 struct DynamicsCompInit;
 
 using PackageId = utils::PackageTable::index;
@@ -403,13 +404,15 @@ public:
      void setTn(Time time)
     {
 		tl = tn;
-		tn = time;
+		tn += time;
+		//std::cout << "setTn: " << tn << " = " << tl << "+"<< time<< std::endl;
 	}
 	
 	Time getTn()
 	{
 		return tn;
 	}
+	
 	Time getTl()
 	{
 		return tl;
@@ -419,14 +422,48 @@ public:
 	{
 		return m_Name;
 	}
+	
+	/*void setInfluancers(std::vector<std::unique_ptr<DynamicsComp>> influancers)
+	{
+		for(auto dyn : influancers)
+				addInfluancer(dyn);
+	}
+	
+	void setInfluances(std::vector<std::unique_ptr<DynamicsComp>> influances)
+	{
+		for(auto dyn : influances)
+				addInfluancer(dyn);
+	}
+	
+	std::vector<std::unique_ptr<DynamicsComp>> getInfluancers()
+	{
+		return influancers;
+	}*/
+	
+	/*std::vector<DynamicsComp *> getInfluancants()
+	{
+		return influancants;
+	}*/
+	
+	void addInfluancer(std::unique_ptr<DynamicsComp> influancer)
+	{
+		influancers.emplace_back(std::move(influancer));
+	}
+	
+	void addInfluance(std::unique_ptr<DynamicsComp> influance)
+	{
+		influances.emplace_back(std::move(influance));
+	}
 
-
+static int nb;
+static std::vector<utils::State *> influanceur;
 private:
-  std::string m_Name;
+	std::string m_Name;
     Time tn;
     Time tl;
-    std::vector<std::unique_ptr<DynamicsComp>> influancer;
+    std::vector<std::unique_ptr<DynamicsComp>> influancers;
     std::vector<std::unique_ptr<DynamicsComp>> influances;
+    
     
     ///< A reference to the context.
     utils::ContextPtr m_context;

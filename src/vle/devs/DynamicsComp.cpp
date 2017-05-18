@@ -38,12 +38,15 @@
 
 namespace vle { namespace devs {
 
+int DynamicsComp::nb;
+std::vector<utils::State *> DynamicsComp::influanceur;
 DynamicsComp::DynamicsComp(const DynamicsCompInit& init,
                    const InitEventList& /* events */)
     : m_context(init.context)
     , m_model(init.model)
     , m_packageid(init.packageid)
 {
+	tn=0;
 }
 
 DynamicsComp::DynamicsComp(const DynamicsCompInit& init,

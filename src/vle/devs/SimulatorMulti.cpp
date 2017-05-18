@@ -144,6 +144,14 @@ const std::string &SimulatorMulti::getName() const
 void SimulatorMulti::finish() 
 {
 	 //m_dynamics->finish(); 
+	  for (auto &dyn : m_dynamics)
+    {
+		
+		//if(dyn->getTn() == time){
+		dyn->finish(); 
+	//}
+		
+	}
 }
 
 void SimulatorMulti::output(Time time)
@@ -154,9 +162,9 @@ void SimulatorMulti::output(Time time)
      for (auto &dyn : m_dynamics)
     {
 		
-		//if(dyn->getTn() == time){
+		if(dyn->getTn() == time){
 		dyn->output(time, m_result);
-	//}
+	}
 		
 	}
 }
@@ -164,11 +172,16 @@ void SimulatorMulti::output(Time time)
 Time SimulatorMulti::timeAdvance()
 {
     Time tn = infinity;//= m_dynamics->timeAdvance();
-    Time temp;
+    Time temp = infinity;;
 	for (auto &dyn : m_dynamics)
     {
-      temp = dyn->timeAdvance();
+		 /* if((dyn->timeAdvance()<dyn->getTn()))
+				temp = dyn->timeAdvance();
+		  else
+			temp = dyn->getTn();*/
       //m_eventTable.init(temp);
+      temp = dyn->timeAdvance();
+     
       if(!(temp>tn))
       {
 		  tn = temp;
@@ -179,7 +192,7 @@ Time SimulatorMulti::timeAdvance()
         throw utils::ModellingError(
             (fmt(_("Negative time advance in '%1%' (%2%)")) % getName() % tn)
                 .str());
-std::cout  << " time advance: " << tn << std::endl;
+//std::cout  << " time advance: " << tn << std::endl;
 
     return tn;
     
@@ -195,11 +208,14 @@ Time SimulatorMulti::init(Time time)
       temp = dyn->init(time);
      
       //m_eventTable.init(temp);
-     
+     //dyn->setTn(dyn->init(time));
+     std::cout << "dynamique init " << dyn->getName() << "tn: " << temp << std::endl;
+     dyn->setTn(temp);
       if(temp < tn)
       {
 		  tn = temp;
 	  }
+	 // std::cout << "dynamique init " << dyn->getName() << "tn: " << dyn->getTn() << " - " << dyn->init(time)<< std::endl;
     }
 
     if (tn < 0.0)
@@ -247,14 +263,26 @@ for (auto &dyn : m_dynamics)
 Time SimulatorMulti::internalTransition(Time time)
 {
     assert(m_have_internal == true and "Simulator d-int error");
+    Time tn = infinity;
+    Time temp;
         for (auto &dyn : m_dynamics)
     {
-    dyn->internalTransition(time);
+		if(dyn->getTn() == time)
+		{
+			dyn->internalTransition(time);
+			dyn->setTn(dyn->timeAdvance());
+		}
+	temp = dyn->getTn();
+		 if(temp < tn)
+      {
+		  tn = temp;
+	  }
 	}
 	m_have_internal = false;
 
-    m_tn = timeAdvance() + time;
-    std::cout << "deltaint: m_tn: " << m_tn << std::endl;
+    //m_tn = timeAdvance() + time;
+    m_tn = tn;
+   // std::cout << "deltaint: m_tn: " << m_tn << std::endl;
     
     return m_tn;
 }

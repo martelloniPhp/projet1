@@ -448,20 +448,20 @@ const InitEventList ev;
             
   
            
-        DynamicsComp *d = new DynamicsComp(init,events,dyn.name()); 
+       // DynamicsComp *d = new DynamicsComp(init,events,dyn.name()); 
         //DynamicsComp *d = fct(init, events);
         //DynamicsComp d(init,events);
          //std::cout << "dynamique instancié " <<  d->getName()  << std::endl;  
         //std::cout << " init dyn "<< init.model.getName() << " init package = " << dyn.package() << std::endl;
-        if(symbol == nullptr){
+        /*if(symbol == nullptr){
 			std::cout << "symbol null" << std::endl;
 		}else{
 			std::cout << "symbol non null" << symbol << std::endl;
-		}
+		}*/
 		//fct(init, events);
         //auto dynamicss = std::unique_ptr<DynamicsComp>(fct(init, events));
        auto dynamics = std::unique_ptr<DynamicsComp>(fct(init, events));
-        auto d2= std::unique_ptr<DynamicsComp>(d);
+       // auto d2= std::unique_ptr<DynamicsComp>(d);
        // delete d;
 		/*std::unique_ptr<DynamicsComp> 
 		dynamics = nullptr; */

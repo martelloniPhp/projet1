@@ -194,6 +194,9 @@ public:
 	virtual bool isMulti() const override { 
 			
 			return true; }
+	
+			
+		
 
 private:
     std::vector<std::unique_ptr<DynamicsComp>> m_dynamics;
