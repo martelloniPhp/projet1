@@ -38,7 +38,7 @@ MultiComponent::MultiComponent(const std::string& name,
     , m_simulator(nullptr)
     , m_debug(false)
 {
-	std::cout << "modele multi créé"<< std::endl;
+	//std::cout << "modele multi créé"<< std::endl;
 }
 
 MultiComponent::MultiComponent(const std::string& name,
@@ -74,7 +74,7 @@ MultiComponent::MultiComponent(const MultiComponent& mdl)
     , m_debug(mdl.m_debug)
 {
     m_conditions = mdl.m_conditions;
-    std::cout << "modele multi créé"<< std::endl;
+   // std::cout << "modele multi créé"<< std::endl;
 }
 
 MultiComponent& MultiComponent::operator=(const MultiComponent& mdl)
@@ -190,7 +190,7 @@ void MultiComponent::addComponent(Component *c)
 	{
 	m_dynamics.push_back(c->dynamics());
 	}
-	std::cout<< "sim.addcomponent: " << c->dynamics() << std::endl;
+	//std::cout<< "sim.addcomponent: " << c->dynamics() << std::endl;
 }
 	
 }} // namespace vpz graph

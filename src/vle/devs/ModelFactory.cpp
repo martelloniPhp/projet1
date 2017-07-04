@@ -592,7 +592,7 @@ ModelFactory::attachDynamics(Coordinator &coordinator,
              dyn.name() % dyn.library() % dyn.package() % e.what())
                 .str());
     }
-std::cout << "attach dynamics" << std::endl;
+//std::cout << "attach dynamics" << std::endl;
     switch (type) {
     case utils::Context::ModuleType::MODULE_DYNAMICS:
         return buildNewDynamics(mContext,

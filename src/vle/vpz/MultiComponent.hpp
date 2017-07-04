@@ -97,7 +97,7 @@ namespace vle { namespace vpz {
          */
         //virtual bool isAtomic() const override { return true; }
 		virtual bool isMulti() const override { 
-			std::cout <<"ismulti"<< std::endl;
+			//std::cout <<"ismulti"<< std::endl;
 			return true; }
         /**
          * @brief Get the list of conditions.

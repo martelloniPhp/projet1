@@ -117,7 +117,7 @@ void Coordinator::run()
 
     const std::size_t nb_dynamics = bag.dynamics.size();
     const std::size_t nb_executive = bag.executives.size();
-    std::cout << "run: nb_dynamics = "<< nb_dynamics << std::endl;
+    //std::cout << "run: nb_dynamics = "<< nb_dynamics << std::endl;
 
     if (nb_dynamics > 0) {
         for (std::size_t i = 0; i != nb_dynamics; ++i)
@@ -493,27 +493,32 @@ void Coordinator::addModels(const vpz::Model &model)
 void Coordinator::dispatchExternalEvent(std::vector<Simulator*> &simulators,
                                         const std::size_t number)
 {
-	
+	//std::cout <<" dispatchExternalEvent 1" << std::endl;
     for (std::size_t i = 0; i != number; ++i) {
 		
         if (simulators[i]->result().empty())
             continue;
 		
         auto &eventList = simulators[i]->result();
-        
+      //  std::cout <<" dispatchExternalEvent 2" << std::endl;
         for (auto &elem : eventList) {
 			
 			
             auto x = simulators[i]->targets(elem.getPortName());
+          //  std::cout <<" simultator  is multi: " << simulators[i]->isMulti() << " simultator  is atomic: " << simulators[i]->isAtomic() << "" << std::endl;
 			
             if (x.first != x.second and x.first->second.first) {
                 for (auto jt = x.first; jt != x.second; ++jt)
+                { 
+					//std::cout <<" test " << jt->second.first->dynamics()->isExecutive() << std::endl;
+					// std::cout <<" sim name " << jt->second.first->getName() << " port name: " << jt->second.second << std::endl;
                     m_eventTable.addExternal(jt->second.first,
                                              elem.attributes(),
                                              jt->second.second);
+										 }
             }
         }
-
+//std::cout <<" dispatchExternalEvent 3" << std::endl;
         simulators[i]->clear_result();
     }
     
@@ -571,11 +576,11 @@ void Coordinator::processInit(Simulator *simulator)
 
     if (not isInfinity(tn)) {
         m_eventTable.addInternal(simulator, tn);
-        std::cout << "_eventTable.addInternal("<< simulator->getName() << ", " << tn <<")" << std::endl;
+        //std::cout << "_eventTable.addInternal("<< simulator->getName() << ", " << tn <<")" << std::endl;
     }
     
     Bag &bag = m_eventTable.getCurrentBag();
-    std::cout << "process init avec: " << m_simulators.size() << " simulaturs" <<std::endl;
+   // std::cout << "process init avec: " << m_simulators.size() << " simulaturs" <<std::endl;
     
     for (auto &sim : m_simulators)
     {

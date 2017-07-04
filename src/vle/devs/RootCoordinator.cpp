@@ -66,7 +66,7 @@ void RootCoordinator::init()
 
 bool RootCoordinator::run()
 {
-	std::cout << "root run" << std::endl;
+	//std::cout << "root run" << std::endl;
     m_currentTime = m_coordinator->getCurrentTime();
 
     if (isInfinity(m_currentTime))

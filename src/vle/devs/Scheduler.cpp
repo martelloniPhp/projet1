@@ -102,10 +102,16 @@ void Scheduler::addExternal(Simulator *simulator,
 
     auto result = m_current_bag.unique_simulators.emplace(simulator);
     if (result.second == true) {
+		if(simulator->isMulti())
+		{
+			 m_current_bag.dynamics.emplace_back(simulator);
+			}
+		else{
         if (simulator->dynamics()->isExecutive())
             m_current_bag.executives.emplace_back(simulator);
         else
             m_current_bag.dynamics.emplace_back(simulator);
+		}
     }
 
     simulator->addExternalEvents(values, portname);

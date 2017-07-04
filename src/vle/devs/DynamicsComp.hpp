@@ -161,7 +161,7 @@ public:
      * model with the internal transition function.
      * @param time the date of occurence of this event.
      */
-    virtual void internalTransition(Time /* time */) {std::cout  << " delta int parent" << std::endl;}
+    virtual void internalTransition(Time /* time */) {/*std::cout  << " delta int parent" << std::endl;*/}
 
     /**
      * @brief Process an external transition: compute the new state of the
@@ -454,6 +454,8 @@ public:
 	{
 		influances.emplace_back(std::move(influance));
 	}
+	
+	virtual void majstate() {};
 
 static int nb;
 static std::vector<utils::State *> influanceur;

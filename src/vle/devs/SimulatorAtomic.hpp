@@ -38,6 +38,7 @@
 #include <vle/vpz/AtomicModel.hpp>
 #include <vle/devs/Simulator.hpp>
 #include <vle/vpz/MultiComponent.hpp>
+#include <vle/devs/SimulatorMulti.hpp>
 
 namespace vle
 {

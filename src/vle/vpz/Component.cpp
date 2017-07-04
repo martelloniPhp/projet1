@@ -38,7 +38,7 @@ Component::Component(const std::string& name,
     //, m_simulator(nullptr)
     , m_debug(false)
 {
-	std::cout << "composent créé"<< std::endl;
+	//std::cout << "composent créé"<< std::endl;
 }
 
 Component::Component(const std::string& name,
@@ -63,7 +63,7 @@ Component::Component(const std::string& name,
         }
     }
     
-    std::cout << "composent créé"<< std::endl;
+   // std::cout << "composent créé"<< std::endl;
 }
 
 Component::Component(const std::string& name,
@@ -94,7 +94,7 @@ Component::Component(const std::string& name,
 		m_container->addComponent(this);
 	}
     
-    std::cout << "composent créé"<< std::endl;
+    //std::cout << "composent créé"<< std::endl;
 }
 
 Component::Component(const Component& mdl)
@@ -105,7 +105,7 @@ Component::Component(const Component& mdl)
     , m_debug(mdl.m_debug)
 {
     m_conditions = mdl.m_conditions;
-    std::cout << "composent créé"<< std::endl;
+   // std::cout << "composent créé"<< std::endl;
 }
 
 Component& Component::operator=(const Component& mdl)

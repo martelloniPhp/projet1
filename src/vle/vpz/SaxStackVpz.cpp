@@ -138,9 +138,9 @@ void SaxStackVpz::pushModel(const xmlChar **att)
         cplparent = tmp->node()->toCoupled();
         if(cplparent == nullptr)
         {
-			std::cout << "cpl parent null haut" << std::endl;
+			//std::cout << "cpl parent null haut" << std::endl;
 			container = tmp->node()->toMulti();
-			std::cout << " container= "<< container->getName() << std::endl;
+			//std::cout << " container= "<< container->getName() << std::endl;
 		}
         push(sub);
     }

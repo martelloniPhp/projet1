@@ -68,7 +68,7 @@ void SimulatorMulti::updateSimulatorTargets(const std::string &port)
 		
                                          
 		if(elem.first->isMulti()){
-			std::cout << "updateSimulatorTargets 6 " << std::endl;
+			//std::cout << "updateSimulatorTargets 6 " << std::endl;
         mTargets.emplace(port,
                          TargetSimulator(static_cast<vpz::MultiComponent *>(
                                              elem.first)->get_simulator(),
@@ -81,9 +81,9 @@ void SimulatorMulti::updateSimulatorTargets(const std::string &port)
 std::pair<SimulatorMulti::iterator, SimulatorMulti::iterator>
 SimulatorMulti::targets(const std::string &port)
 {
-	std::cout << "sim->target 1"<< std::endl;
+//	std::cout << "simMul->target 1"<< std::endl;
     auto x = mTargets.equal_range(port);
-std::cout << "sim->target 2"<< std::endl;
+//std::cout << "simMul->target 2"<< std::endl;
     // If the updateSimulatorTargets function was never call, we update
     // the simulator targets and try to retrieve the newest simulator
     // targets.
@@ -91,10 +91,10 @@ std::cout << "sim->target 2"<< std::endl;
         updateSimulatorTargets(port);
         x = mTargets.equal_range(port);
     }
-std::cout << "sim->target 3"<< std::endl;
+//std::cout << "simMul->target 3"<< std::endl;
     if (x.first->second.first == nullptr)
         return {mTargets.end(), mTargets.end()};
-std::cout << "sim->target 4"<< std::endl;
+//std::cout << "simMul->target 4"<< std::endl;
     return x;
 }
 
@@ -209,7 +209,7 @@ Time SimulatorMulti::init(Time time)
      
       //m_eventTable.init(temp);
      //dyn->setTn(dyn->init(time));
-     std::cout << "dynamique init " << dyn->getName() << "tn: " << temp << std::endl;
+    // std::cout << "dynamique init " << dyn->getName() << "tn: " << temp << std::endl;
      dyn->setTn(temp);
       if(temp < tn)
       {
@@ -277,6 +277,10 @@ Time SimulatorMulti::internalTransition(Time time)
       {
 		  tn = temp;
 	  }
+	}
+	for (auto &dyn : m_dynamics)
+    {
+	dyn->majstate();
 	}
 	m_have_internal = false;
 

@@ -682,7 +682,7 @@ void BaseModel::getModelList(BaseModel* model,
     } 
     else if(model->isMulti()){
 		list2.push_back((MultiComponent*)model);
-		std::cout<<"multicomposant avec: "<< (((MultiComponent*)model)->getComponents()).size() << std::endl;
+		//std::cout<<"multicomposant avec: "<< (((MultiComponent*)model)->getComponents()).size() << std::endl;
 		for( auto e : ((MultiComponent*)model)->getComponents())
 		{
 			//std::cout<<"add Component"<< std::endl;
@@ -705,7 +705,7 @@ void BaseModel::getModelList(BaseModel* model,
                     list.push_back(static_cast < AtomicModel*>(n));
                 } else if(n->isMulti()){
 					list2.push_back(static_cast < MultiComponent*>(n));
-					std::cout<<"multicomposant avec: "<< (((MultiComponent*)n)->getComponents()).size() << std::endl;
+					//std::cout<<"multicomposant avec: "<< (((MultiComponent*)n)->getComponents()).size() << std::endl;
 					for( auto e : ((MultiComponent*)n)->getComponents())
 					{
 						//std::cout<<"add Component"<< std::endl;

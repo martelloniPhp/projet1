@@ -26,6 +26,7 @@
  */
 
 #include <vle/devs/SimulatorAtomic.hpp>
+
 #include <vle/utils/Exception.hpp>
 #include <vle/utils/i18n.hpp>
 #include <iostream>
@@ -48,14 +49,14 @@ SimulatorAtomic::SimulatorAtomic(vpz::AtomicModel *atomic)
 
 void SimulatorAtomic::updateSimulatorTargets(const std::string &port)
 {
-	std::cout << "updateSimulatorTargets 1"<< std::endl;
+	//std::cout << "updateSimulatorTargets 1"<< std::endl;
     assert(m_atomicModel);
-std::cout << "updateSimulatorTargets 2"<< std::endl;
+//std::cout << "updateSimulatorTargets 2"<< std::endl;
     mTargets.erase(port);
-std::cout << "updateSimulatorTargets 3"<< std::endl;
+//std::cout << "updateSimulatorTargets 3"<< std::endl;
     vpz::ModelPortList result;
     m_atomicModel->getAtomicModelsTarget(port, result);
-std::cout << "updateSimulatorTargets 4"<< std::endl;
+//std::cout << "updateSimulatorTargets 4"<< std::endl;
     if (result.begin() == result.end()) {
         mTargets.emplace(port, TargetSimulator(nullptr, std::string()));
         return;
@@ -63,22 +64,27 @@ std::cout << "updateSimulatorTargets 4"<< std::endl;
 
     for (auto &elem : result)
     {
-		std::cout << "updateSimulatorTargets 5 "<< elem.first->isAtomic() << std::endl;
+		//std::cout << "updateSimulatorTargets 5 "<< elem.first->isAtomic() << std::endl;
 		if(elem.first->isAtomic()){
 mTargets.emplace(port,
                          TargetSimulator(static_cast<vpz::AtomicModel *>(
                                              elem.first)->get_simulator(),
-                                         elem.second)); }							 
+                                         elem.second)); }	
+   else if(elem.first->isMulti()){
+mTargets.emplace(port,
+                         TargetSimulator(static_cast<vpz::MultiComponent *>(
+                                             elem.first)->get_simulator(),
+                                         elem.second)); }                                    						 
 									 }
-         std::cout << "updateSimulatorTargets 7"<< std::endl;
+         //std::cout << "Atomic updateSimulatorTargets 7"<< std::endl;
 }
 
 std::pair<Simulator::iterator, Simulator::iterator>
 SimulatorAtomic::targets(const std::string &port)
 { 
-	std::cout << "sim->target 1"<< std::endl;
+	//std::cout << "simAt->target 1"<< std::endl;
     auto x = mTargets.equal_range(port);
-std::cout << "sim->target 2"<< std::endl;
+//std::cout << "sim->target 2"<< std::endl;
     // If the updateSimulatorTargets function was never call, we update
     // the simulator targets and try to retrieve the newest simulator
     // targets.
@@ -86,10 +92,10 @@ std::cout << "sim->target 2"<< std::endl;
         updateSimulatorTargets(port);
         x = mTargets.equal_range(port);
     }
-std::cout << "sim->target 3"<< std::endl;
+//std::cout << "simAT->target 2"<< std::endl;
     if (x.first->second.first == nullptr)
         return {mTargets.end(), mTargets.end()};
-std::cout << "sim->target 4"<< std::endl;
+//std::cout << "simAT->target 3"<< std::endl;
     return x;
 }
 

@@ -316,7 +316,7 @@ public:
 
     void *get(const std::string& symbol)
     {
-		std::cout << "1 symboleTble.get symbol: " << symbol << std::endl; 
+		//std::cout << "1 symboleTble.get symbol: " << symbol << std::endl; 
         const_iterator it = mLst.find(symbol);
 
         // Already in cache, returns the symbol.
@@ -334,14 +334,14 @@ public:
 #else
         result = ::dlsym(nullptr, symbol.c_str());
 #endif
-std::cout << "2 symboleTble.get " << std::endl; 
+//std::cout << "2 symboleTble.get " << std::endl; 
         if (not result)
             throw utils::InternalError(
                 (fmt(_("Module: `%1%' not found in global space"))
                  % symbol).str());
 
         auto ret = mLst.emplace(symbol, result);
-std::cout << "3 symboleTble.get symbol: " << symbol << std::endl; 
+//std::cout << "3 symboleTble.get symbol: " << symbol << std::endl; 
         if (not ret.second)
             assert(false && "emplace failure but find returns true");
 
@@ -724,7 +724,7 @@ void* Context::get_symbol(const std::string& package,
                           Context::ModuleType type,
                           Context::ModuleType *newtype)
 {
-	 std::cout << "contextmodule.get_symbole 1" << std::endl;
+	// std::cout << "contextmodule.get_symbole 1" << std::endl;
     if (not m_pimpl->modules)
         m_pimpl->modules = std::make_shared<ModuleManager>(this);
 
@@ -734,7 +734,7 @@ void* Context::get_symbol(const std::string& package,
     const auto& module = m_pimpl->modules->getModule(package, library, type);
     auto *result = module->get();
     *newtype = module->mType;
-std::cout << "contextmodule.get_symbole 2 result: " << module->mLibrary << std::endl;
+//std::cout << "contextmodule.get_symbole 2 result: " << module->mLibrary << std::endl;
     return result;
 }
 
