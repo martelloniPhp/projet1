@@ -54,7 +54,7 @@ void Simulator::updateSimulatorTargets(const std::string &port)
 
     for (auto &elem : result)
     {
-		std::cout << "updateSimulatorTargets 5 "<< elem.first->isAtomic() << std::endl;
+		//std::cout << "updateSimulatorTargets 5 "<< elem.first->isAtomic() << std::endl;
 		if(elem.first->isAtomic()){
         mTargets.emplace(port,
                          TargetSimulator(static_cast<vpz::AtomicModel *>(
@@ -62,7 +62,7 @@ void Simulator::updateSimulatorTargets(const std::string &port)
                                          elem.second));
 									 }
 		if(elem.first->isMulti()){
-			std::cout << "updateSimulatorTargets 6 " << std::endl;
+		//	std::cout << "updateSimulatorTargets 6 " << std::endl;
         mTargets.emplace(port,
                          TargetSimulator((static_cast<vpz::MultiComponent *>(
                                              elem.first)) ->get_simulator(),

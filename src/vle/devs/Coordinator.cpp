@@ -582,10 +582,10 @@ void Coordinator::processInit(Simulator *simulator)
     Bag &bag = m_eventTable.getCurrentBag();
    // std::cout << "process init avec: " << m_simulators.size() << " simulaturs" <<std::endl;
     
-    for (auto &sim : m_simulators)
+   /* for (auto &sim : m_simulators)
     {
 		std::cout << "- "<< sim->getName() << std::endl;
-	}
+	}*/
 	
 	
 }

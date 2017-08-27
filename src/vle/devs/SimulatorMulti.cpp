@@ -31,6 +31,11 @@
 #include <vle/utils/Exception.hpp>
 #include <vle/utils/i18n.hpp>
 #include <iostream>
+//#include <boost/bind.hpp>
+//#include <boost/thread.hpp>
+#include <thread>
+
+
 
 namespace vle
 {
@@ -260,12 +265,36 @@ for (auto &dyn : m_dynamics)
     return m_tn;
 }
 
+void SimulatorMulti::thread(Time time,Time temp,Time *tn)
+{
+    for (auto &dyn : m_dynamics)
+    {
+		if(dyn->getTn() == time)
+		{
+			dyn->internalTransition(time);
+			dyn->setTn(dyn->timeAdvance());
+		}
+	temp = dyn->getTn();
+		 if(temp < *tn)
+      {
+		  *tn = temp;
+	  }
+	}
+}
+
+
+
 Time SimulatorMulti::internalTransition(Time time)
 {
+	
+	
     assert(m_have_internal == true and "Simulator d-int error");
-    Time tn = infinity;
+    Time tn1 = infinity;
+    Time tn2 = infinity;
+    Time tn3 = infinity;
+    Time tn4 = infinity;
     Time temp;
-        for (auto &dyn : m_dynamics)
+       /* for (auto &dyn : m_dynamics)
     {
 		if(dyn->getTn() == time)
 		{
@@ -277,7 +306,15 @@ Time SimulatorMulti::internalTransition(Time time)
       {
 		  tn = temp;
 	  }
-	}
+	 
+	}*/
+	  //boost::thread t{SimulatorMulti::thread};
+	 // boost::thread t( boost::bind( &SimulatorMulti::thread,this ) );
+	  //std::thread t (SimulatorMulti::thread);
+	    std::thread t(&SimulatorMulti::thread,this,time,temp,&tn1);
+	  t.join();
+	//
+	// SimulatorMulti::thread(time,temp,&tn);
 	for (auto &dyn : m_dynamics)
     {
 	dyn->majstate();
@@ -285,7 +322,7 @@ Time SimulatorMulti::internalTransition(Time time)
 	m_have_internal = false;
 
     //m_tn = timeAdvance() + time;
-    m_tn = tn;
+    m_tn = mintime(tn1,tn2,tn3,tn4);
    // std::cout << "deltaint: m_tn: " << m_tn << std::endl;
     
     return m_tn;

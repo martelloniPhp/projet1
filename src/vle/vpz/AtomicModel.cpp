@@ -60,7 +60,7 @@ AtomicModel::AtomicModel(const std::string& name,
             m_conditions.pop_back();
         }
     }
-    std::cout << "modele atomic créé"<< std::endl;
+    //std::cout << "modele atomic créé"<< std::endl;
 }
 
 AtomicModel::AtomicModel(const AtomicModel& mdl)
@@ -71,7 +71,7 @@ AtomicModel::AtomicModel(const AtomicModel& mdl)
     , m_debug(mdl.m_debug)
 {
     m_conditions = mdl.m_conditions;
-     std::cout << "modele atomic créé"<< std::endl;
+     //std::cout << "modele atomic créé"<< std::endl;
 }
 
 AtomicModel& AtomicModel::operator=(const AtomicModel& mdl)

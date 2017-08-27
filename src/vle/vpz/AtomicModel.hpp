@@ -93,7 +93,7 @@ namespace vle { namespace vpz {
          * @return true.
          */
         virtual bool isAtomic() const override { 
-			std::cout <<"isatomic"<< std::endl;
+			//std::cout <<"isatomic"<< std::endl;
 			return true; }
 
         /**

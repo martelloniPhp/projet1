@@ -6,7 +6,7 @@ enable_testing()
 # Options
 #
 
-option(WITH_GVLE "use QT to build gvle [default: on]" OFF)
+option(WITH_GVLE "use QT to build gvle [default: on]" ON)
 option(WITH_TEST "build unit test [default: on]" OFF)
 option(WITH_DOXYGEN "build the documentation with doxygen [default: off]" OFF)
 option(WITH_MVLE "build mvle [default: off]" OFF)

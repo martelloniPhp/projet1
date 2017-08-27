@@ -40,6 +40,7 @@
 #include <vle/devs/Simulator.hpp>
 #include <vle/vpz/AtomicModel.hpp>
 
+
 namespace vle
 {
 namespace devs
@@ -195,8 +196,61 @@ public:
 			
 			return true; }
 	
-			
-		
+	void thread(Time time,Time temp,Time* tn);		
+	
+	Time mintime(Time t1,Time t2,Time t3,Time t4)
+	{
+		if(t1<t2)
+		{
+			if(t1<t3)
+			{
+				if(t1<t4)
+				{
+					return t1;
+				}
+				else
+				{
+					return t4;
+				}
+			}
+			else
+			{
+				if(t3<t4)
+				{
+					return t3;
+				}
+				else
+				{
+					return t4;
+				}
+			}
+		}
+		else
+		{
+			if(t2<t3)
+			{
+				if(t2<t4)
+				{
+					return t2;
+				}
+				else
+				{
+					return t4;
+				}
+			}
+			else
+			{
+				if(t3<t4)
+				{
+					return t3;
+				}
+				else
+				{
+					return t4;
+				}
+			}
+		}
+	}	
 
 private:
     std::vector<std::unique_ptr<DynamicsComp>> m_dynamics;

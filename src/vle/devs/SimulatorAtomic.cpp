@@ -44,7 +44,7 @@ SimulatorAtomic::SimulatorAtomic(vpz::AtomicModel *atomic)
     assert(atomic && "Simulator: missing vpz::AtomicMOdel");
 
      m_atomicModel->m_simulator = this;
-     std::cout << "simulateur atomic créé"<< std::endl;
+     //std::cout << "simulateur atomic créé"<< std::endl;
 }
 
 void SimulatorAtomic::updateSimulatorTargets(const std::string &port)
@@ -119,7 +119,7 @@ void SimulatorAtomic::addTargetPort(const std::string &port)
 void SimulatorAtomic::addDynamics(std::unique_ptr<Dynamics> dynamics) 
 {
     m_dynamics = std::unique_ptr<Dynamics>(std::move(dynamics));
-     std::cout << "add dynamics atomic" << std::endl;
+  //   std::cout << "add dynamics atomic" << std::endl;
 }
 
 void SimulatorAtomic::addDynamics(std::unique_ptr<DynamicsComp> dynamics)

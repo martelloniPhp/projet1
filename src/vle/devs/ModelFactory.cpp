@@ -194,11 +194,11 @@ void ModelFactory::createModels(Coordinator &coordinator,
 			componentlist.push_back((vpz::Component *)mdl);
 		}        
         else {
-			std::cout << " is coupled"<< std::endl;
+			//std::cout << " is coupled"<< std::endl;
             vpz::BaseModel::getModelList(mdl, atomicmodellist, multicomponentlist, componentlist);
             
         }
- std::cout << "atomicModelList: "<< atomicmodellist.size()<< "  multicomponentlist: "<< multicomponentlist.size() << "  Componentlist: "<< componentlist.size()<< std::endl;
+ //std::cout << "atomicModelList: "<< atomicmodellist.size()<< "  multicomponentlist: "<< multicomponentlist.size() << "  Componentlist: "<< componentlist.size()<< std::endl;
         
          for (auto &elem : multicomponentlist) {
             createMulticomponent(coordinator,
@@ -369,9 +369,9 @@ std::unique_ptr<Dynamics> buildNewDynamics(utils::ContextPtr context,
 
     fctdyn fct = utils::functionCast<fctdyn>(symbol);
       if(symbol == nullptr){
-			std::cout << "symbol null" << std::endl;
+		//	std::cout << "symbol null" << std::endl;
 		}else{
-			std::cout << "symbol non null" << std::endl;
+			//std::cout << "symbol non null" << std::endl;
 		}
 	
     try {
