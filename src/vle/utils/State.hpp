@@ -100,14 +100,15 @@ class State
 	 public:
 	static std::vector<State *> states;
 	static int n;
-	 //std::vector<Position> voisinage = {(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)};  
-	 std::vector<std::pair<int, int>> voisinage = {{-2,-2},{-1,-1},{-1,0},{-1,1},{-2,2},{0,-1},{0,1},{2,-2},{1,-1},{1,0},{1,1},{2,2}};
+	 std::vector<std::pair<int, int>> voisinage  = {{-1,-1},{-1,0},{-1,1},{0,-1},{0,1},{1,-1},{1,0},{1,1}};  
+	// std::vector<std::pair<int, int>> voisinage = {{-2,-2},{-1,-1},{-1,0},{-1,1},{-2,2},{0,-1},{0,1},{2,-2},{1,-1},{1,0},{1,1},{2,2}};
+	// std::vector<std::pair<int, int>> voisinage = {{-2,0},{-1,-1},{-1,0},{-1,1},{0,-2},{0,-1},{0,1},{0,2},{1,-1},{1,0},{1,1},{2,0}};
 	
-	 State () {lastMasse=0;elapsed=0;}
-	 State (Position pos) { p = pos;states.emplace_back(this); n++;lastMasse=0;}
-	 State (Position pos, std::string v) { p = pos; val = v;states.emplace_back(this);n++;lastMasse=0;}
-	 State (int i, int j, std::string v) { p.i=i; p.j=j;  val=v; states.emplace_back(this);n++;lastMasse=0;}
-	 State (int i, int j, std::string v,float t, float m) { p.i=i; p.j=j;  val=v; states.emplace_back(this);n++; temperature=t; masse=m; lastMasse=m;}
+	 State (bool act=true) {lastMasse=0;elapsed=0;activity = act;}
+	 State (Position pos,bool act=true) { p = pos;states.emplace_back(this); n++;lastMasse=0;activity = act;}
+	 State (Position pos, std::string v,bool act=true) { p = pos; val = v;states.emplace_back(this);n++;lastMasse=0;activity = act;}
+	 State (int i, int j, std::string v,bool act=true) { p.i=i; p.j=j;  val=v; states.emplace_back(this);n++;lastMasse=0;activity = act;}
+	 State (int i, int j, std::string v,float t, float m,bool act=true) { p.i=i; p.j=j;  val=v; states.emplace_back(this);n++; temperature=t; masse=m; lastMasse=m;activity = act;}
 	 ~State () = default;
 	 
 	 void setState(int i, int j, std::string v) 
@@ -145,6 +146,16 @@ class State
 	  {
 		  return lastMasse;
 	  }
+	  
+	  bool getActivity()
+	  {
+		  return activity;
+		}
+		
+		void setActivity(bool act)
+		{
+			activity = act;
+		}
 	 
 	Position getPosition() {return p;} 
 	void setPosition(Position pos) {p = pos;} 
@@ -163,6 +174,7 @@ class State
 	 float masse;
 	 float lastMasse;
 	 int elapsed;
+	 bool activity;
 	 
 	 
 	 

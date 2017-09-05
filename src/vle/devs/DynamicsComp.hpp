@@ -456,15 +456,25 @@ public:
 	}
 	
 	virtual void majstate() {};
+	
+	bool getActivity()
+	{
+		return state2->getActivity();
+	}
 
 static int nb;
 static std::vector<utils::State *> influanceur;
+static std::vector<utils::State *> influance;
+protected:
+  vle::utils::State* state2;
+  vle::utils::State* state2new;
 private:
 	std::string m_Name;
     Time tn;
     Time tl;
     std::vector<std::unique_ptr<DynamicsComp>> influancers;
     std::vector<std::unique_ptr<DynamicsComp>> influances;
+  
     
     
     ///< A reference to the context.

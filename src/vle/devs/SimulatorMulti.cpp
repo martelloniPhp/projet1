@@ -272,16 +272,19 @@ void SimulatorMulti::thread1(Time time,Time temp,Time *tn)
 	//for(auto &dyn : m_dynamics)
 	for(unsigned int i = 0; i<m_dynamics.size()/4;i++)
 	{
-		if(m_dynamics[i]->getTn() == time)
+		if(m_dynamics[i]->getActivity())
 		{
-			m_dynamics[i]->internalTransition(time);
-			m_dynamics[i]->setTn(m_dynamics[i]->timeAdvance());
+			if(m_dynamics[i]->getTn() == time)
+			{
+				m_dynamics[i]->internalTransition(time);
+				m_dynamics[i]->setTn(m_dynamics[i]->timeAdvance());
+			}
+			temp = m_dynamics[i]->getTn();
+			if(temp < *tn)
+			{
+				*tn = temp;
+			}
 		}
-	temp = m_dynamics[i]->getTn();
-		 if(temp < *tn)
-      {
-		  *tn = temp;
-	  }
 	}
 	//std::cout<<"thread1 executé"<< std::endl;
 }
@@ -293,16 +296,19 @@ void SimulatorMulti::thread2(Time time,Time temp,Time *tn)
 	//for(auto &dyn : m_dynamics)
 	for(unsigned int i = m_dynamics.size()/4; i<m_dynamics.size()/2;i++)
 	{
-		if(m_dynamics[i]->getTn() == time)
+		if(m_dynamics[i]->getActivity())
 		{
-			m_dynamics[i]->internalTransition(time);
-			m_dynamics[i]->setTn(m_dynamics[i]->timeAdvance());
+			if(m_dynamics[i]->getTn() == time)
+			{
+				m_dynamics[i]->internalTransition(time);
+				m_dynamics[i]->setTn(m_dynamics[i]->timeAdvance());
+			}
+			temp = m_dynamics[i]->getTn();
+			if(temp < *tn)
+			{
+				*tn = temp;
+			}
 		}
-	temp = m_dynamics[i]->getTn();
-		 if(temp < *tn)
-      {
-		  *tn = temp;
-	  }
 	}
 	//std::cout<<"thread2 executé"<< std::endl;
 }
@@ -313,16 +319,19 @@ void SimulatorMulti::thread3(Time time,Time temp,Time *tn)
 	//for(auto &dyn : m_dynamics)
 	for(unsigned int i = m_dynamics.size()/2; i<(3*m_dynamics.size()/4);i++)
 	{
-		if(m_dynamics[i]->getTn() == time)
+		if(m_dynamics[i]->getActivity())
 		{
-			m_dynamics[i]->internalTransition(time);
-			m_dynamics[i]->setTn(m_dynamics[i]->timeAdvance());
+			if(m_dynamics[i]->getTn() == time)
+			{
+				m_dynamics[i]->internalTransition(time);
+				m_dynamics[i]->setTn(m_dynamics[i]->timeAdvance());
+			}
+			temp = m_dynamics[i]->getTn();
+			if(temp < *tn)
+			{
+				*tn = temp;
+			}
 		}
-	temp = m_dynamics[i]->getTn();
-		 if(temp < *tn)
-      {
-		  *tn = temp;
-	  }
 	}
 	//std::cout<<"thread3 executé"<< std::endl;
 }
@@ -334,16 +343,19 @@ void SimulatorMulti::thread4(Time time,Time temp,Time *tn)
 	//for(auto &dyn : m_dynamics)
 	for(unsigned int i = (3*m_dynamics.size()/4); i<m_dynamics.size();i++)
 	{
-		if(m_dynamics[i]->getTn() == time)
+		if(m_dynamics[i]->getActivity())
 		{
-			m_dynamics[i]->internalTransition(time);
-			m_dynamics[i]->setTn(m_dynamics[i]->timeAdvance());
+			if(m_dynamics[i]->getTn() == time)
+			{
+				m_dynamics[i]->internalTransition(time);
+				m_dynamics[i]->setTn(m_dynamics[i]->timeAdvance());
+			}
+			temp = m_dynamics[i]->getTn();
+			if(temp < *tn)
+			{
+				*tn = temp;
+			}
 		}
-	temp = m_dynamics[i]->getTn();
-		 if(temp < *tn)
-      {
-		  *tn = temp;
-	  }
 	}
 	//std::cout<<"thread4 executé"<< std::endl;
 }
@@ -357,8 +369,10 @@ Time SimulatorMulti::internalTransition(Time time)
     Time tn3 = infinity;
     Time tn4 = infinity;
     Time temp;
-     /*   for (auto &dyn : m_dynamics)
+        for (auto &dyn : m_dynamics)
     {
+     if(dyn->getActivity())
+		{
 		if(dyn->getTn() == time)
 		{
 			dyn->internalTransition(time);
@@ -369,13 +383,14 @@ Time SimulatorMulti::internalTransition(Time time)
       {
 		  tn1 = temp;
 	  }
+	  }
 	 
-	}*/
+	}
 	  //boost::thread t{SimulatorMulti::thread};
 	 // boost::thread t( boost::bind( &SimulatorMulti::thread,this ) );
 	  //std::thread t (SimulatorMulti::thread);
 	  
-	    std::thread t1(&SimulatorMulti::thread1,this,time,temp,&tn1);
+	   /* std::thread t1(&SimulatorMulti::thread1,this,time,temp,&tn1);
 	    std::thread t2(&SimulatorMulti::thread2,this,time,temp,&tn2);
 	    std::thread t3(&SimulatorMulti::thread3,this,time,temp,&tn3);
 	    std::thread t4(&SimulatorMulti::thread4,this,time,temp,&tn4);
@@ -383,7 +398,7 @@ Time SimulatorMulti::internalTransition(Time time)
 	    t2.join();
 	    t3.join();
 	    t4.join();
-	    
+	    */
 	//
 	// SimulatorMulti::thread(time,temp,&tn);
 	for (auto &dyn : m_dynamics)
