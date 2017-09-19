@@ -143,7 +143,7 @@ public:
      * @endcode
      */
     virtual void output(Time /* time */,
-                        ExternalEventList &  /*output*/ ) const
+                        ExternalEventList &  /*output*/ ) 
     {
 		//output.emplace_back("output");
     }

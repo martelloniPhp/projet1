@@ -196,10 +196,9 @@ public:
 			
 			return true; }
 	
-	void thread1(Time time,Time temp,Time* tn);
-	void thread2(Time time,Time temp,Time* tn);
-	void thread3(Time time,Time temp,Time* tn);
-	void thread4(Time time,Time temp,Time* tn);		
+	
+	void internalTransitionThread(Time time,int t,Time temp,Time* tn);
+	void initThread(Time time, int t,Time temp,Time *tn);		
 	
 	Time mintime(Time t1,Time t2,Time t3,Time t4)
 	{

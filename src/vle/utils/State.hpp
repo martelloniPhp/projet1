@@ -100,9 +100,9 @@ class State
 	 public:
 	static std::vector<State *> states;
 	static int n;
-	 std::vector<std::pair<int, int>> voisinage  = {{-1,-1},{-1,0},{-1,1},{0,-1},{0,1},{1,-1},{1,0},{1,1}};  
-	// std::vector<std::pair<int, int>> voisinage = {{-2,-2},{-1,-1},{-1,0},{-1,1},{-2,2},{0,-1},{0,1},{2,-2},{1,-1},{1,0},{1,1},{2,2}};
-	// std::vector<std::pair<int, int>> voisinage = {{-2,0},{-1,-1},{-1,0},{-1,1},{0,-2},{0,-1},{0,1},{0,2},{1,-1},{1,0},{1,1},{2,0}};
+	 //std::vector<std::pair<int, int>> voisinage  = {{-1,-1},{-1,0},{-1,1},{0,-1},{0,1},{1,-1},{1,0},{1,1}};  
+	 //std::vector<std::pair<int, int>> voisinage = {{-3,0},{-2,-2},{-1,-1},{-1,0},{-1,1},{-2,2},{0,-3},{0,-1},{0,1},{0,3},{2,-2},{1,-1},{1,0},{1,1},{2,2},{3,0}};
+	 std::vector<std::pair<int, int>> voisinage = {{-2,0},{-1,-1},{-1,0},{-1,1},{0,-2},{0,-1},{0,1},{0,2},{1,-1},{1,0},{1,1},{2,0}};
 	
 	 State (bool act=true) {lastMasse=0;elapsed=0;activity = act;}
 	 State (Position pos,bool act=true) { p = pos;states.emplace_back(this); n++;lastMasse=0;activity = act;}
