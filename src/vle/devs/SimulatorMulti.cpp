@@ -227,6 +227,8 @@ void SimulatorMulti::initThread(Time time, int t,Time temp,Time *tn)
 
 Time SimulatorMulti::init(Time time)
 {
+	
+	std::cout << "debut init" << std::endl;
     Time tn1 = infinity;
     Time tn2 = infinity;
     Time tn3 = infinity;
@@ -267,6 +269,7 @@ Time SimulatorMulti::init(Time time)
    // m_tn = tn + time;
     m_tn = mintime(tn1,tn2,tn3,tn4)+time;
    // std::cout  << " time init " << m_tn << std::endl;
+   std::cout << "fin init" << std::endl;
     return m_tn;
    // return 0;
 }

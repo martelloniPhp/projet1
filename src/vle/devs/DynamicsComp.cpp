@@ -36,11 +36,13 @@
 #include <vle/utils/Exception.hpp>
 #include <vle/utils/i18n.hpp>
 
+
 namespace vle { namespace devs {
 
 int DynamicsComp::nb;
 std::vector<utils::State *> DynamicsComp::influanceur;
 std::vector<utils::State *> DynamicsComp::influance;
+std::map<std::string,utils::State *> DynamicsComp::influancess;
 DynamicsComp::DynamicsComp(const DynamicsCompInit& init,
                    const InitEventList& /* events */)
     : m_context(init.context)

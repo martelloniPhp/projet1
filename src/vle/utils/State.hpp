@@ -100,6 +100,8 @@ class State
 	 public:
 	static std::vector<State *> states;
 	static int n;
+	//State () {}
+	//~State () = default;
 	 //std::vector<std::pair<int, int>> voisinage  = {{-1,-1},{-1,0},{-1,1},{0,-1},{0,1},{1,-1},{1,0},{1,1}};  
 	 //std::vector<std::pair<int, int>> voisinage = {{-3,0},{-2,-2},{-1,-1},{-1,0},{-1,1},{-2,2},{0,-3},{0,-1},{0,1},{0,3},{2,-2},{1,-1},{1,0},{1,1},{2,2},{3,0}};
 	 std::vector<std::pair<int, int>> voisinage = {{-2,0},{-1,-1},{-1,0},{-1,1},{0,-2},{0,-1},{0,1},{0,2},{1,-1},{1,0},{1,1},{2,0}};
@@ -166,7 +168,7 @@ class State
 	static int nb();
 	int nbs() {return n;}
 	 
-	 private:
+	 protected:
 	 
 	 Position p;
 	 std::string val; 

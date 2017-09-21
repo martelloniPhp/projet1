@@ -46,6 +46,7 @@
 #include <vle/vle.hpp>
 #include <vle/vpz/MultiComponent.hpp>
 #include <vle/devs/AbstractDynamics.hpp>
+#include <map>
 
 #define DECLARE_DYNAMICSCOMP(mdl)                                                 \
  extern "C" {                                                              \
@@ -465,6 +466,8 @@ public:
 static int nb;
 static std::vector<utils::State *> influanceur;
 static std::vector<utils::State *> influance;
+static std::map<std::string,utils::State *> influancess;
+
 protected:
   vle::utils::State* state2;
   vle::utils::State* state2new;
