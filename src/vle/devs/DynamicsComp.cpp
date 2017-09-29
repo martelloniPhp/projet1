@@ -40,9 +40,9 @@
 namespace vle { namespace devs {
 
 int DynamicsComp::nb;
-std::vector<utils::State *> DynamicsComp::influanceur;
+/*std::vector<utils::State *> DynamicsComp::influanceur;*/
 std::vector<utils::State *> DynamicsComp::influance;
-std::map<std::string,utils::State *> DynamicsComp::influancess;
+std::map<std::string,utils::State *> DynamicsComp::influanceur;
 DynamicsComp::DynamicsComp(const DynamicsCompInit& init,
                    const InitEventList& /* events */)
     : m_context(init.context)

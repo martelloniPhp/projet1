@@ -464,9 +464,9 @@ public:
 	}
 
 static int nb;
-static std::vector<utils::State *> influanceur;
+/*static std::vector<utils::State *> influanceur;*/
 static std::vector<utils::State *> influance;
-static std::map<std::string,utils::State *> influancess;
+static std::map<std::string,utils::State *> influanceur;
 
 protected:
   vle::utils::State* state2;
