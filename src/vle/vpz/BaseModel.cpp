@@ -745,8 +745,8 @@ void BaseModel::getAtomicModelList(BaseModel* model,
     }
 }
 
-void BaseModel::getComponentlist (BaseModel* model,
-                               ComponentVector& list)
+void BaseModel::getComponentlist (BaseModel* /*model*/,
+                               ComponentVector& /*list*/)
 {
     /*if (model->isComponent()) {
         list.push_back((Component*)model);

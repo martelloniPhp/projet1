@@ -85,8 +85,9 @@ public:
     }*/
     vpz::AtomicModel *getStructure() const
     {
-        vpz::AtomicModel *a;
-        return a;
+        //vpz::AtomicModel *a;
+        //return a;
+        return nullptr;
     }
     
     vpz::MultiComponent *getStruc() const 
@@ -119,7 +120,7 @@ public:
     Time timeAdvance() override;
     void finish() override;
     void output(Time time) override;
-    Time internalTransition(Time time) override;
+	Time internalTransition(Time time) override;
     Time externalTransition(Time time) override;
     Time confluentTransitions(Time time) override;
     std::unique_ptr<value::Value>

@@ -122,7 +122,7 @@ void SimulatorAtomic::addDynamics(std::unique_ptr<Dynamics> dynamics)
   //   std::cout << "add dynamics atomic" << std::endl;
 }
 
-void SimulatorAtomic::addDynamics(std::unique_ptr<DynamicsComp> dynamics)
+void SimulatorAtomic::addDynamics(std::unique_ptr<DynamicsComp> /*dynamics*/)
 {
    throw utils::InternalError(_("Simulator Atomic wrong model"));
 

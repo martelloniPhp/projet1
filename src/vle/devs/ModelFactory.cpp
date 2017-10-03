@@ -115,8 +115,7 @@ void ModelFactory::createMulticomponent(Coordinator &coordinator,
                                const std::string &observable)
 {
     
-   // std::cout << "Milticomposent: nombre de dynamics = " << model->dynamics().size() << std::endl;
-    //const vpz::Dynamic &dyn = mDynamics.get(dynamics);
+
     auto sim = coordinator.addMulticomponent(model);
 
     InitEventList initValues;
@@ -141,10 +140,7 @@ void ModelFactory::createMulticomponent(Coordinator &coordinator,
  if( model->dynamics().size() >0){ 
 for(auto &elem : model->dynamics()){
 	const vpz::Dynamic &dyn = mDynamics.get(elem);
-	//std::cout << "modele = "<< model->getName() <<" dynamique ajoutée = " << dyn << " package: "<< dyn.package() << std::endl;
-	//attacheDynamics(coordinator, sim, dyn, initValues, observable);
-   //std::cout << "modele.add dynamics = "<< attacheDynamics(coordinator, sim, dyn, initValues, observable)->getModelName() << std::endl;
-    sim->addDynamics(
+ sim->addDynamics(
         attacheDynamics(coordinator, sim, dyn, initValues, observable));        
 	}
 
@@ -223,14 +219,7 @@ void ModelFactory::createModels(Coordinator &coordinator,
        
         }
          
-        /*
-        for (auto &elem : componentlist) {
-		
-		std::cout << "composent: name = " << elem->getName() << " components" << std::endl;
-		
-		
-		}
-		*/
+       
     }
 }
 
@@ -423,20 +412,19 @@ std::unique_ptr<Dynamics> buildNewDynamics(utils::ContextPtr context,
 
 
 std::unique_ptr<DynamicsComp> buildDynamics(utils::ContextPtr context,
-                                           std::map<std::string, View> &views,
-                                           const vpz::Views &vpzviews,
-                                           const std::string &observable,
+                                          // std::map<std::string, View> &views,
+                                          // const vpz::Views &vpzviews,
+                                          // const std::string &observable,
                                            devs::Simulator *atom,
                                            const vpz::Dynamic &dyn,
                                            const InitEventList &events,
                                            void *symbol)
 {
     typedef DynamicsComp *(*fctdyn)(const DynamicsCompInit &, const InitEventList &);
-    //typedef Dynamics *(*fctdyne)(const DynamicsInit &, const InitEventList &); 
+   
 
     fctdyn fct = utils::functionCast<fctdyn>(symbol);
-    //fctdyn fct;
-   // fctdyne fcte = utils::functionCast<fctdyne>(symbol);
+ 
 
      
     
@@ -448,24 +436,9 @@ const InitEventList ev;
             
   
            
-       // DynamicsComp *d = new DynamicsComp(init,events,dyn.name()); 
-        //DynamicsComp *d = fct(init, events);
-        //DynamicsComp d(init,events);
-         //std::cout << "dynamique instancié " <<  d->getName()  << std::endl;  
-        //std::cout << " init dyn "<< init.model.getName() << " init package = " << dyn.package() << std::endl;
-        /*if(symbol == nullptr){
-			std::cout << "symbol null" << std::endl;
-		}else{
-			std::cout << "symbol non null" << symbol << std::endl;
-		}*/
-		//fct(init, events);
-        //auto dynamicss = std::unique_ptr<DynamicsComp>(fct(init, events));
+      
        auto dynamics = std::unique_ptr<DynamicsComp>(fct(init, events));
-       // auto d2= std::unique_ptr<DynamicsComp>(d);
-       // delete d;
-		/*std::unique_ptr<DynamicsComp> 
-		dynamics = nullptr; */
-            //return d2;
+      
             return dynamics;
         
     }
@@ -669,16 +642,16 @@ void *symbol = nullptr;
  
    
   std::unique_ptr<DynamicsComp> result = buildDynamics(mContext,
-                                mEventViews,
-                                mExperiment.views(),
-                                observable,
+                               // mEventViews,
+                               // mExperiment.views(),
+                               // observable,
                                 atom,
                                 dyn,
                                 events,
                                 symbol);
 							
                                 
- //   std::cout << "attach dynamicsComp" << std::endl;                      
+                  
                                 
 	return result;
    

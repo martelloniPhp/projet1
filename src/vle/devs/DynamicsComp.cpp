@@ -53,7 +53,7 @@ DynamicsComp::DynamicsComp(const DynamicsCompInit& init,
 }
 
 DynamicsComp::DynamicsComp(const DynamicsCompInit& init,
-                   const InitEventList& events, std::string name)
+                   const InitEventList& /*events*/, std::string name)
     : m_context(init.context)
     , m_model(init.model)
     , m_packageid(init.packageid)

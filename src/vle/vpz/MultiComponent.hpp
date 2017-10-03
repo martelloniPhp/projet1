@@ -199,15 +199,15 @@ namespace vle { namespace vpz {
          * @param oldname the old name of the dynamics.
          * @param newname the new name of the dynamics.
          */
-        virtual void updateDynamics(const std::string& oldname,
-                            const std::string& newname) override
+        virtual void updateDynamics(const std::string& /*oldname*/,
+                            const std::string& /*newname*/) override
                             {}
 
         /**
          * @brief purge the dymamics not present in the list.
          * @param dynamicslist a list of dynamics name
          */
-        virtual void purgeDynamics(const std::set < std::string >& dynamicslist) override{}
+        virtual void purgeDynamics(const std::set < std::string >& /*dynamicslist*/) override{}
 
         /**
          * @brief Update the Observable of the AtomicModel where an

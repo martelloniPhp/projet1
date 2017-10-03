@@ -120,7 +120,7 @@ void SimulatorMulti::addTargetPort(const std::string &port)
         port, TargetSimulator((SimulatorMulti *)nullptr, std::string())));
 }
 
-void SimulatorMulti::addDynamics(std::unique_ptr<Dynamics> dynamics)
+void SimulatorMulti::addDynamics(std::unique_ptr<Dynamics> /*dynamics*/)
 {
    throw utils::InternalError(_("Simulator Multi wrong model"));
    //auto *dyn =  dynamic_cast<std::unique_ptr<DynamicsComp>>(std::move(dynamics));  
@@ -133,7 +133,7 @@ void SimulatorMulti::addDynamics(std::unique_ptr<DynamicsComp> dynamics)
     
     m_dynamics.push_back(std::move(dynamics));
 }
-void SimulatorMulti::addDynamics(std::vector<std::unique_ptr<DynamicsComp>> *dynamics)
+void SimulatorMulti::addDynamics(std::vector<std::unique_ptr<DynamicsComp>>* /* *dynamics*/)
 {
     //m_dynamics = dynamics;
 }
@@ -207,7 +207,7 @@ Time SimulatorMulti::timeAdvance()
 void SimulatorMulti::initThread(Time time, int t,Time temp,Time *tn)
 {
 	int taille = m_dynamics.size()/4;
-	for(unsigned int i = t*taille; i<(t*taille+taille);i++)
+	for(int i = t*taille; i<(t*taille+taille);i++)
 	//for(unsigned int i = t; i<=t*m_dynamics.size();i++)
 	{
 		 temp = m_dynamics[i]->init(time);
@@ -279,7 +279,7 @@ Time SimulatorMulti::confluentTransitions(Time time)
     assert(not m_external_events.empty() and "Simulator d-conf error");
     assert(m_have_internal == true and "Simulator d-conf error");
    // m_dynamics->confluentTransitions(time, m_external_events);
-    Time temp;
+    Time temp = infinity;
 for (auto &dyn : m_dynamics)
     {
 		if(dyn->getTn() == time)
@@ -312,7 +312,7 @@ void SimulatorMulti::internalTransitionThread(Time time,int t,Time temp,Time *tn
 	int taille = m_dynamics.size()/4;
     
 	//for(auto &dyn : m_dynamics)
-	for(unsigned int i = t*taille; i<(t*taille+taille);i++)
+	for(int i = t*taille; i<(t*taille+taille);i++)
 	//for(unsigned int i = (3*m_dynamics.size()/4); i<m_dynamics.size();i++)
 	{
 		if(m_dynamics[i]->getActivity())
@@ -329,7 +329,7 @@ void SimulatorMulti::internalTransitionThread(Time time,int t,Time temp,Time *tn
 			}
 		}
 	}
-	//std::cout<<"thread4 executé"<< std::endl;
+	
 }
 Time SimulatorMulti::internalTransition(Time time)
 {
@@ -372,16 +372,14 @@ Time SimulatorMulti::internalTransition(Time time)
 	    t4.join();
 	    
 	//
-	// SimulatorMulti::thread(time,temp,&tn);
+	
 	for (auto &dyn : m_dynamics)
     {
 	dyn->majstate();
 	}
-	m_have_internal = false;
-
-    //m_tn = timeAdvance() + time;
+	m_have_internal = false;    
     m_tn = mintime(tn1,tn2,tn3,tn4);
-   // std::cout << "deltaint: m_tn: " << m_tn << std::endl;
+   
     
     return m_tn;
 }
@@ -389,8 +387,8 @@ Time SimulatorMulti::internalTransition(Time time)
 Time SimulatorMulti::externalTransition(Time time)
 {
     assert(not m_external_events.empty() and "Simulator d-ext error");
-     Time temp;
-    //m_dynamics->externalTransition(m_external_events, time);
+     Time temp = infinity;
+    
 for (auto &dyn : m_dynamics)
     {
 		
@@ -407,7 +405,7 @@ for (auto &dyn : m_dynamics)
     return m_tn;
 }
 
-std::unique_ptr<value::Value> SimulatorMulti::observation(const ObservationEvent &event) const
+std::unique_ptr<value::Value> SimulatorMulti::observation(const ObservationEvent& /*&event*/) const
 {
     return nullptr; //m_dynamics->observation(event);
 }
