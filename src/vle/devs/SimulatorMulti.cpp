@@ -162,7 +162,7 @@ void SimulatorMulti::finish()
 void SimulatorMulti::output(Time time)
 {
     assert(m_result.empty());
-//std::cout  << " output simulator multi" << std::endl;
+//std::cout  << time << " output simulator" << std::endl;
     //m_dynamics->output(time, m_result);
      for (auto &dyn : m_dynamics)
     {
@@ -315,8 +315,8 @@ void SimulatorMulti::internalTransitionThread(Time time,int t,Time temp,Time *tn
 	for(int i = t*taille; i<(t*taille+taille);i++)
 	//for(unsigned int i = (3*m_dynamics.size()/4); i<m_dynamics.size();i++)
 	{
-		if(m_dynamics[i]->getActivity())
-		{
+		//if(m_dynamics[i]->getActivity())
+		//{
 			if(m_dynamics[i]->getTn() == time)
 			{
 				m_dynamics[i]->internalTransition(time);
@@ -327,7 +327,7 @@ void SimulatorMulti::internalTransitionThread(Time time,int t,Time temp,Time *tn
 			{
 				*tn = temp;
 			}
-		}
+		//}
 	}
 	
 }
